@@ -1,18 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axios from "axios";
 
 function App() {
-  const [data, setData] = React.useState(null);
+  const [categories, setCategories] = React.useState([]);
 
-  React.useEffect(() => {
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setData(data.message));
+  useEffect(() => {
+    axios
+      .get("/admin/categories")
+      .then((result) => {
+        setCategories(result.data.categories);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
   return (
     <div>
-      <h1>App.js</h1>
-      <p>{data || "Loading"}</p>
+      <h1>Your Categories</h1>
+      <ul>
+        {categories.length > 0 ? (
+          categories.map((c) => {
+            return (
+              <li key={c._id}>
+                <p>{c.title}</p>
+              </li>
+            );
+          })
+        ) : (
+          <h2>Categories No Found!</h2>
+        )}
+      </ul>
     </div>
   );
 }
