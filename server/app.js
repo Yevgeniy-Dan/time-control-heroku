@@ -33,19 +33,19 @@ app.get("*", (req, res, next) => {
   res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
 });
 
-mongoose
-  .connect(MONGODB_URI)
-  .then(() => {
-    User.findOne().then((user) => {
-      if (!user) {
-        const user = new User({
-          name: "Jack",
-          email: "jack@test.gmal",
-        });
+// mongoose
+//   .connect(MONGODB_URI)
+//   .then(() => {
+//     User.findOne().then((user) => {
+//       if (!user) {
+//         const user = new User({
+//           name: "Jack",
+//           email: "jack@test.gmal",
+//         });
 
-        user.save();
-      }
-    });
-    app.listen(PORT);
-  })
-  .catch((err) => console.log(err));
+//         user.save();
+//       }
+//     });
+app.listen(PORT);
+// })
+// .catch((err) => console.log(err));
