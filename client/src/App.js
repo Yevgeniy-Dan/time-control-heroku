@@ -6,44 +6,44 @@ function App() {
 
   const titleRef = useRef(null);
 
-  // useEffect(() => {
-  //   getCategories().then((categories) => {
-  //     setCategories(categories);
-  //   });
-  // }, []);
+  useEffect(() => {
+    getCategories().then((categories) => {
+      setCategories(categories);
+    });
+  }, []);
 
   const getCategories = async () => {
-    // const result = await api.get("/admin/categories");
-    // if (result.status === 200) {
-    //   const categories = result.data.categories.map((c) => {
-    //     return {
-    //       id: c._id,
-    //       title: c.title,
-    //     };
-    //   });
-    //   return categories;
-    // } else {
-    //   return [];
-    // }
+    const result = await api.get("/admin/categories");
+    if (result.status === 200) {
+      const categories = result.data.categories.map((c) => {
+        return {
+          id: c._id,
+          title: c.title,
+        };
+      });
+      return categories;
+    } else {
+      return [];
+    }
   };
 
   const addCategoryHandle = async (event) => {
     event.preventDefault();
 
-    // const response = await api.post("/admin/add-category", {
-    //   title: titleRef.current.value,
-    // });
+    const response = await api.post("/admin/add-category", {
+      title: titleRef.current.value,
+    });
 
-    // if (response.status === 200) {
-    //   titleRef.current.value = "";
-    //   setCategories([
-    //     ...categories,
-    //     {
-    //       id: response.data._id,
-    //       title: response.data.title,
-    //     },
-    //   ]);
-    // }
+    if (response.status === 200) {
+      titleRef.current.value = "";
+      setCategories([
+        ...categories,
+        {
+          id: response.data._id,
+          title: response.data.title,
+        },
+      ]);
+    }
   };
 
   const deleteCategoryHandle = async (id) => {

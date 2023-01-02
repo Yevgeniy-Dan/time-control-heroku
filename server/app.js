@@ -1,13 +1,9 @@
+const { port, mongoUri } = require("../config");
 const path = require("path");
 
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-
-const PORT = process.env.PORT || 3001;
-const MONGODB_URI =
-  process.env.MONGODB_URI ||
-  "mongodb+srv://EugeneDanoi:D6F9MJjDpF7iwdY@cluster0.k8hmzeg.mongodb.net/time-control?retryWrites=true&w=majority";
 
 const User = require("./models/user");
 
@@ -33,19 +29,19 @@ app.get("*", (req, res, next) => {
   res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
 });
 
-// mongoose
-//   .connect(MONGODB_URI)
-//   .then(() => {
-//     User.findOne().then((user) => {
-//       if (!user) {
-//         const user = new User({
-//           name: "Jack",
-//           email: "jack@test.gmal",
-//         });
+mongoose
+  .connect(mongoUri)
+  .then(() => {
+    User.findOne().then((user) => {
+      if (!user) {
+        const user = new User({
+          name: "Jack",
+          email: "jack@test.gmal",
+        });
 
-//         user.save();
-//       }
-//     });
-app.listen(PORT);
-// })
-// .catch((err) => console.log(err));
+        user.save();
+      }
+    });
+    app.listen(port);
+  })
+  .catch((err) => console.log(err));
