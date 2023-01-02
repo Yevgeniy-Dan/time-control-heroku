@@ -30,7 +30,7 @@ app.get("*", (req, res, next) => {
 });
 
 mongoose
-  .connect(mongoUri)
+  .connect(process.env.MONGODB_URI || mongoUri)
   .then(() => {
     User.findOne().then((user) => {
       if (!user) {
@@ -42,6 +42,6 @@ mongoose
         user.save();
       }
     });
-    app.listen(port);
+    app.listen(process.env.PORT || port);
   })
   .catch((err) => console.log(err));
