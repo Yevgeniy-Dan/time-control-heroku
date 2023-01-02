@@ -5,6 +5,9 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const PORT = process.env.PORT || 3001;
+const MONGODB_URI =
+  process.env.MONGODB_URI ||
+  "mongodb+srv://EugeneDanoi:D6F9MJjDpF7iwdY@cluster0.k8hmzeg.mongodb.net/time-control?retryWrites=true&w=majority";
 
 const User = require("./models/user");
 
@@ -31,9 +34,7 @@ app.get("*", (req, res, next) => {
 });
 
 mongoose
-  .connect(
-    "mongodb+srv://EugeneDanoi:D6F9MJjDpF7iwdY@cluster0.k8hmzeg.mongodb.net/time-control?retryWrites=true&w=majority"
-  )
+  .connect(MONGODB_URI)
   .then(() => {
     User.findOne().then((user) => {
       if (!user) {
