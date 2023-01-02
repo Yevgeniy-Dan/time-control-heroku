@@ -1,4 +1,4 @@
-const { port, mongoUri } = require("../config");
+const { mongoUri, port } = require("./config/config");
 const path = require("path");
 
 const express = require("express");
