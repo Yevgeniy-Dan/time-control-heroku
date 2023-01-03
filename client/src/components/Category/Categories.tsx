@@ -21,7 +21,9 @@ const Categories = () => {
         return <Category category={c} key={c._id} />;
       })}
 
-      {categories.items.length === 0 && <h2>Categories Not Found</h2>}
+      {categories.items.length === 0 && (
+        <h2 className="text-center m-5">Categories Not Found</h2>
+      )}
     </div>
   );
 };
