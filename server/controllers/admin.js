@@ -11,8 +11,6 @@ exports.getCategories = (req, res, next) => {
 exports.postAddCategory = (req, res, next) => {
   const title = req.body.title;
 
-  console.log("title: ", title);
-
   const category = new Category({
     title: title,
     userId: req.user,

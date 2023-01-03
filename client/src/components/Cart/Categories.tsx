@@ -1,67 +1,34 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
-import api from "../../http";
 import classes from "./Categories.module.css";
-import Category from "../../models/category";
+import CategoryModel from "../../models/category";
+import Category from "./Category";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import {
+  fetchCategoriesData,
+  addCategoryData,
+} from "../../store/categories/categories-actions";
 
 const Categories = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const dispatch = useAppDispatch();
+  const categories = useAppSelector((state) => state.categories);
 
   const titleRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    getCategories().then((categories) => {
-      setCategories(categories);
-    });
-  }, []);
-
-  const getCategories = async () => {
-    const result = await api.get("/admin/categories");
-    if (result.status === 200) {
-      const categories = result.data.categories.map((c: Category) => {
-        return {
-          id: c._id,
-          title: c.title,
-        };
-      });
-      return categories;
-    } else {
-      return [];
-    }
-  };
+    dispatch(fetchCategoriesData());
+  }, [dispatch]);
 
   const addCategoryHandle = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const response = await api.post("/admin/add-category", {
-      title: titleRef.current!.value,
-    });
+    const title = titleRef.current!.value;
 
-    if (response.status === 200) {
-      titleRef.current!.value = "";
-      setCategories([
-        ...categories,
-        {
-          _id: response.data._id,
-          title: response.data.title,
-        },
-      ]);
-    }
-  };
+    const newCategory = new CategoryModel(title);
 
-  const deleteCategoryHandle = async (id: string) => {
-    // event.preventDefault();
+    dispatch(addCategoryData({ ...newCategory }));
 
-    const response = await api.post("/admin/delete-category", {
-      categoryId: id,
-    });
-
-    if (response.status === 200) {
-      const updateCategories = categories.filter(
-        (c) => c._id !== response.data._id
-      );
-      setCategories(updateCategories);
-    }
+    titleRef.current!.value = "";
   };
 
   return (
@@ -88,29 +55,11 @@ const Categories = () => {
         </form>
       </div>
 
-      <ul>
-        {categories.length > 0 ? (
-          categories.map((c) => {
-            return (
-              <li key={c._id}>
-                <p>{c.title}</p>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    deleteCategoryHandle(c._id);
-                  }}
-                  method="post"
-                >
-                  <input type="hidden" value={c._id} />
-                  <button type="submit">Delete</button>
-                </form>
-              </li>
-            );
-          })
-        ) : (
-          <h2>Categories No Found!</h2>
-        )}
-      </ul>
+      {categories.items.map((c) => {
+        return <Category category={c} key={c._id} />;
+      })}
+
+      {categories.items.length === 0 && <h2>Categories Not Found</h2>}
     </div>
   );
 };

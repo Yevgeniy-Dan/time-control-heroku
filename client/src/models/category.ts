@@ -2,8 +2,8 @@ class Category {
   _id: string;
   title: string;
 
-  constructor(_id: string, title: string) {
-    this._id = _id;
+  constructor(title: string) {
+    this._id = new Date().toISOString();
     this.title = title;
   }
 }
