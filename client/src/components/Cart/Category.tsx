@@ -1,7 +1,9 @@
 import React from "react";
+import { Button, Card } from "react-bootstrap";
 import { useAppDispatch } from "../../hooks/redux";
 import CategoryModel from "../../models/category";
 import { removeCategoryData } from "../../store/categories/categories-actions";
+import classes from "./Categories.module.css";
 
 const Category: React.FC<
   React.PropsWithChildren<{
@@ -15,13 +17,14 @@ const Category: React.FC<
   };
 
   return (
-    <div>
-      <p>{category.title}</p>
-      <form onSubmit={deleteCategoryHandle} method="post">
-        <input type="hidden" value={category._id} />
-        <button type="submit">Delete</button>
-      </form>
-    </div>
+    <Card className={`${classes.categoryContainer} mb-3`}>
+      <Card.Body className="d-flex justify-content-between align-items-center">
+        <Card.Title>{category.title}</Card.Title>
+        <Button variant="danger" onClick={deleteCategoryHandle}>
+          Delete
+        </Button>
+      </Card.Body>
+    </Card>
   );
 };
 
