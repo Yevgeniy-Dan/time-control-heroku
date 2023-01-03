@@ -1,7 +1,6 @@
 const Category = require("../models/category");
 
 exports.getCategories = (req, res, next) => {
-  console.log("GET CATEGORIES");
   Category.find().then((categories) => {
     res.json({
       categories: categories,
@@ -11,6 +10,8 @@ exports.getCategories = (req, res, next) => {
 
 exports.postAddCategory = (req, res, next) => {
   const title = req.body.title;
+
+  console.log("title: ", title);
 
   const category = new Category({
     title: title,
@@ -22,7 +23,10 @@ exports.postAddCategory = (req, res, next) => {
     .then((category) => {
       res.json(category);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+      res.json(err);
+    });
 };
 
 exports.postDeleteCategory = (req, res, next) => {

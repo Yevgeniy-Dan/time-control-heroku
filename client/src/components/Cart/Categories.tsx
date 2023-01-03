@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import api from "./http";
 
-function App() {
-  const [categories, setCategories] = useState([]);
+import api from "../../http";
+import classes from "./Categories.module.css";
+import Category from "../../models/category";
 
-  const titleRef = useRef(null);
+const Categories = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  const titleRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     getCategories().then((categories) => {
@@ -15,7 +18,7 @@ function App() {
   const getCategories = async () => {
     const result = await api.get("/admin/categories");
     if (result.status === 200) {
-      const categories = result.data.categories.map((c) => {
+      const categories = result.data.categories.map((c: Category) => {
         return {
           id: c._id,
           title: c.title,
@@ -27,26 +30,26 @@ function App() {
     }
   };
 
-  const addCategoryHandle = async (event) => {
+  const addCategoryHandle = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const response = await api.post("/admin/add-category", {
-      title: titleRef.current.value,
+      title: titleRef.current!.value,
     });
 
     if (response.status === 200) {
-      titleRef.current.value = "";
+      titleRef.current!.value = "";
       setCategories([
         ...categories,
         {
-          id: response.data._id,
+          _id: response.data._id,
           title: response.data.title,
         },
       ]);
     }
   };
 
-  const deleteCategoryHandle = async (id) => {
+  const deleteCategoryHandle = async (id: string) => {
     // event.preventDefault();
 
     const response = await api.post("/admin/delete-category", {
@@ -55,7 +58,7 @@ function App() {
 
     if (response.status === 200) {
       const updateCategories = categories.filter(
-        (c) => c.id !== response.data._id
+        (c) => c._id !== response.data._id
       );
       setCategories(updateCategories);
     }
@@ -63,28 +66,42 @@ function App() {
 
   return (
     <div>
-      <form onSubmit={addCategoryHandle} method="post">
-        <div className="form-control">
-          <label htmlFor="title">Category Title</label>
-          <input ref={titleRef} type="text" name="title" id="title" />
-          <button type="submit">Add Category</button>
-        </div>
-      </form>
-      <h1>Your Categories</h1>
+      <div className={classes.categoryContainer}>
+        <form onSubmit={addCategoryHandle} method="post">
+          <div className="mb-3">
+            <label htmlFor="title" className="form-label">
+              Category Title
+            </label>
+            <input
+              ref={titleRef}
+              type="text"
+              name="title"
+              id="title"
+              className="form-control"
+            />
+          </div>
+          <div className="mb-3">
+            <button className="btn btn-warning" type="submit">
+              Add Category
+            </button>
+          </div>
+        </form>
+      </div>
+
       <ul>
         {categories.length > 0 ? (
           categories.map((c) => {
             return (
-              <li key={c.id}>
+              <li key={c._id}>
                 <p>{c.title}</p>
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    deleteCategoryHandle(c.id);
+                    deleteCategoryHandle(c._id);
                   }}
                   method="post"
                 >
-                  <input type="hidden" value={c.id} />
+                  <input type="hidden" value={c._id} />
                   <button type="submit">Delete</button>
                 </form>
               </li>
@@ -96,6 +113,6 @@ function App() {
       </ul>
     </div>
   );
-}
+};
 
-export default App;
+export default Categories;
