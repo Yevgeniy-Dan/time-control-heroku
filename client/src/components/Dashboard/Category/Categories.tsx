@@ -1,5 +1,5 @@
 import Category from "./Category";
-import { useAppSelector } from "../../hooks/redux";
+import { useAppSelector } from "../../../hooks/redux";
 import AddCategoryForm from "./AddCategoryForm";
 
 const Categories = () => {

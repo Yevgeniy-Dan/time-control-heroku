@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import Layout from "./components/Layout/Layout";
-import Categories from "./components/Category/Categories";
+import Categories from "./components/Dashboard/Category/Categories";
 import NotFound from "./components/pages/NotFound";
-import Todos from "./components/Todo/Todos";
+import Todos from "./components/Dashboard/Todo/Todos";
 import { fetchCategoriesData } from "./store/categories/categories-actions";
 import { useAppDispatch } from "./hooks/redux";
 

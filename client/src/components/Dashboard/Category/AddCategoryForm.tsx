@@ -1,9 +1,8 @@
 import React, { useState, useRef } from "react";
 import { Button, Form } from "react-bootstrap";
-import { useAppDispatch } from "../../hooks/redux";
-
-import CategoryModel from "../../models/category";
-import { addCategoryData } from "../../store/categories/categories-actions";
+import { useAppDispatch } from "../../../hooks/redux";
+import CategoryModel from "../../../models/category";
+import { addCategoryData } from "../../../store/categories/categories-actions";
 import classes from "./Categories.module.css";
 
 const AddCategoryForm: React.FC<React.PropsWithChildren<{}>> = (props) => {

@@ -1,14 +1,14 @@
 import React, { useRef, useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
 
-import CategoryModel from "../../models/category";
-import TodoModel from "../../models/todo";
+import CategoryModel from "../../../models/category";
+import TodoModel from "../../../models/todo";
 
-import { useAppDispatch } from "../../hooks/redux";
-import { addTodoData } from "../../store/todos/todos-actions";
+import { useAppDispatch } from "../../../hooks/redux";
+import { addTodoData } from "../../../store/todos/todos-actions";
 
-import AppBadge from "../UI/AppBadge";
-import SelectCategory from "../UI/SelectCategory";
+import AppBadge from "../../UI/AppBadge";
+import SelectCategory from "../../UI/SelectCategory";
 import classes from "./Todos.module.css";
 
 const AddTodoForm: React.FC<React.PropsWithChildren<{}>> = (props) => {

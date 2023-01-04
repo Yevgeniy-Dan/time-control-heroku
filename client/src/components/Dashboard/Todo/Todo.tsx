@@ -1,8 +1,8 @@
 import React from "react";
 import { Badge, Button, Card } from "react-bootstrap";
-import { useAppDispatch } from "../../hooks/redux";
-import Todo from "../../models/todo";
-import { removeTodoData } from "../../store/todos/todos-actions";
+import { useAppDispatch } from "../../../hooks/redux";
+import Todo from "../../../models/todo";
+import { removeTodoData } from "../../../store/todos/todos-actions";
 import classes from "./Todos.module.css";
 
 const TodoCard: React.FC<React.PropsWithChildren<{ todo: Todo }>> = ({

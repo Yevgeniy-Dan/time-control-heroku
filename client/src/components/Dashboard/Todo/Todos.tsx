@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { fetchTodosData } from "../../store/todos/todos-actions";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import { fetchTodosData } from "../../../store/todos/todos-actions";
 import AddTodoForm from "./AddTodoForm";
 import TodoModel from "./Todo";
 

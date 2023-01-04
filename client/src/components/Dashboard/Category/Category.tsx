@@ -1,12 +1,12 @@
 import React, { useState, useRef } from "react";
 import { Button, Card } from "react-bootstrap";
-import { useAppDispatch } from "../../hooks/redux";
-import useOutsideClick from "../../hooks/useOutsideClick";
-import CategoryModel from "../../models/category";
+import { useAppDispatch } from "../../../hooks/redux";
+import useOutsideClick from "../../../hooks/useOutsideClick";
+import CategoryModel from "../../../models/category";
 import {
   editCategoryData,
   removeCategoryData,
-} from "../../store/categories/categories-actions";
+} from "../../../store/categories/categories-actions";
 import classes from "./Categories.module.css";
 
 const Category: React.FC<
