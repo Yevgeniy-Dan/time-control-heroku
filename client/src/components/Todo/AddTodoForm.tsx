@@ -32,7 +32,7 @@ const AddTodoForm: React.FC<React.PropsWithChildren<{}>> = (props) => {
     if ((form as HTMLButtonElement).checkValidity() === false) {
       event.stopPropagation();
     } else {
-      const newTodo = new TodoModel(title, selectedCategory?._id);
+      const newTodo = new TodoModel(title, selectedCategory);
 
       dispatch(addTodoData({ ...newTodo }));
 

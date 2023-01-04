@@ -31,7 +31,7 @@ export const addTodoData = (todo: TodoModel) => {
     const sendRequest = async () => {
       const addedItem = await api.post("/admin/add-todo", {
         title: todo.title,
-        categoryId: todo?.categoryId,
+        categoryId: todo.category?._id,
       });
       return addedItem.data;
     };

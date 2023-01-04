@@ -40,22 +40,30 @@ exports.postAddTodo = (req, res, next) => {
   const title = req.body.title;
   const categoryId = req.body.categoryId;
 
-  const todo = new Todo({
-    title: title,
-    categoryId: categoryId || null,
-    userId: req.user,
-  });
-
-  todo
-    .save()
-    .then((todo) => {
-      req.user.addToTodoCart(todo);
-      return res.json(todo);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.json(err);
+  Category.findById(categoryId).then((category) => {
+    let todo = new Todo({
+      title: title,
+      userId: req.user,
     });
+
+    if (category) {
+      todo.category = {
+        title: category.title,
+        categoryId: category,
+      };
+    }
+
+    todo
+      .save()
+      .then((todo) => {
+        // req.user.addToTodoCart(todo);
+        return res.json(todo);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.json(err);
+      });
+  });
 };
 
 exports.postDeleteCategory = (req, res, next) => {

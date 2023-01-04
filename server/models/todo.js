@@ -7,9 +7,15 @@ const todoSchema = new Schema({
     type: String,
     required: true,
   },
-  categoryId: {
-    type: Schema.Types.ObjectId,
-    required: false,
+  category: {
+    title: {
+      type: String,
+      required: false,
+    },
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      required: false,
+    },
   },
   userId: {
     type: Schema.Types.ObjectId,

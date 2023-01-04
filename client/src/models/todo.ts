@@ -1,12 +1,14 @@
+import Category from "./category";
+
 class Todo {
   _id: string;
   title: string;
-  categoryId: string | null;
+  category: Category | null;
 
-  constructor(title: string, categoryId?: string) {
+  constructor(title: string, category: Category | null) {
     this._id = new Date().toISOString();
     this.title = title;
-    this.categoryId = categoryId || null;
+    this.category = category || null;
   }
 }
 

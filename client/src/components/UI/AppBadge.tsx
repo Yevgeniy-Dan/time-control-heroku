@@ -10,7 +10,7 @@ const AppBadge: React.FC<
     <div
       className={`d-flex align-items-center justify-content-center ${classes.categoryBadgeContainer}`}
     >
-      <Badge onClick={onClick} bg="info" className={classes.categoryBadge}>
+      <Badge onClick={onClick} bg="primary" className={classes.categoryBadge}>
         {title}
       </Badge>
     </div>

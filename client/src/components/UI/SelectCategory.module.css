@@ -4,7 +4,7 @@
   right: -22%;
   z-index: 300;
   width: 400px;
-  height: 200px;
+  /* height: 200px; */
   max-height: 200px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   background-color: #fff;

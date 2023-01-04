@@ -22,7 +22,7 @@ const todosSlice = createSlice({
       state.items.push({
         _id: newItem._id,
         title: newItem.title,
-        categoryId: newItem?.categoryId,
+        category: newItem?.category,
       });
     },
     removeTodo(state, action: PayloadAction<{ item: TodoModel }>) {
