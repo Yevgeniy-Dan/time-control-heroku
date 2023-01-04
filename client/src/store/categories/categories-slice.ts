@@ -25,8 +25,6 @@ const categoriesSlice = createSlice({
       state,
       action: PayloadAction<{ item: CategoryModel }>
     ) {
-      state.changed = true;
-
       const newItem = action.payload.item;
 
       state.items.push({
@@ -34,12 +32,17 @@ const categoriesSlice = createSlice({
         title: newItem.title,
       });
     },
+    editCategory(state, action: PayloadAction<{ item: CategoryModel }>) {
+      const editItem = state.items.filter(
+        (c) => c._id === action.payload.item._id
+      )[0];
+
+      editItem.title = action.payload.item.title;
+    },
     removeCategoryFromCategories(
       state,
       action: PayloadAction<{ item: CategoryModel }>
     ) {
-      state.changed = true;
-
       const id = action.payload.item._id;
       state.items = state.items.filter((item) => item._id !== id);
     },

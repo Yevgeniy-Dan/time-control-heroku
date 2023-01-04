@@ -45,6 +45,26 @@ export const addCategoryData = (category: CategoryModel) => {
   };
 };
 
+export const editCategoryData = (category: CategoryModel) => {
+  return async (dispatch: AppDispatch) => {
+    const sendRequest = async () => {
+      const response = await api.post("/admin/edit-category", {
+        categoryId: category._id,
+        title: category.title,
+      });
+
+      return response.data;
+    };
+    try {
+      // first update the interface
+      dispatch(categoriesActions.editCategory({ item: category }));
+      await sendRequest();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
+
 export const removeCategoryData = (category: CategoryModel) => {
   return async (dispatch: AppDispatch) => {
     const sendRequest = async () => {

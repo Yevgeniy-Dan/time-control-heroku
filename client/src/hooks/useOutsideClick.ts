@@ -8,8 +8,10 @@ const useOutsideClick = (ref: any, action: () => void) => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("blur", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("blur", handleClickOutside);
     };
   }, [ref, action]);
 };

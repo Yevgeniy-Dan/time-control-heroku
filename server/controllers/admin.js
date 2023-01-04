@@ -17,6 +17,21 @@ exports.getTodos = (req, res, next) => {
   });
 };
 
+exports.postEditCategory = (req, res, next) => {
+  const categoryId = req.body.categoryId;
+  const updatedTitle = req.body.title;
+
+  Category.findById(categoryId)
+    .then((category) => {
+      category.title = updatedTitle;
+      return category.save();
+    })
+    .then((editItem) => {
+      res.json(editItem);
+    })
+    .catch((err) => console.log(err));
+};
+
 exports.postAddCategory = (req, res, next) => {
   const title = req.body.title;
 

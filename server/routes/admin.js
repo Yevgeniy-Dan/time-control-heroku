@@ -10,6 +10,9 @@ router.get("/categories", adminController.getCategories);
 // /admin/add-todo => GET
 router.get("/todos", adminController.getTodos);
 
+// /admin/edit-category => POST
+router.post("/edit-category", adminController.postEditCategory);
+
 // /admin/add-category => POST
 router.post("/add-category", adminController.postAddCategory);
 

@@ -1,4 +1,21 @@
 .categoryContainer {
   max-width: 540px;
   margin: auto;
+  cursor: text;
+}
+
+.title,
+.editTitleInput {
+  width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.editTitleInput {
+  border: 0;
+}
+
+.editTitleInput:focus {
+  outline: none;
 }
