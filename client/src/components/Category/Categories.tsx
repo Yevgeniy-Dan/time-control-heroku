@@ -1,17 +1,9 @@
-import { useEffect } from "react";
-
 import Category from "./Category";
-import { useAppDispatch, useAppSelector } from "../../hooks/redux";
-import { fetchCategoriesData } from "../../store/categories/categories-actions";
+import { useAppSelector } from "../../hooks/redux";
 import AddCategoryForm from "./AddCategoryForm";
 
 const Categories = () => {
-  const dispatch = useAppDispatch();
   const categories = useAppSelector((state) => state.categories);
-
-  useEffect(() => {
-    dispatch(fetchCategoriesData());
-  }, [dispatch]);
 
   return (
     <div>

@@ -1,0 +1,8 @@
+.todoContainer {
+  max-width: 540px;
+  margin: auto;
+}
+
+.todoInput {
+  padding-right: 15%;
+}

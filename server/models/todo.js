@@ -2,10 +2,14 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const categorySchema = new Schema({
+const todoSchema = new Schema({
   title: {
     type: String,
     required: true,
+  },
+  categoryId: {
+    type: Schema.Types.ObjectId,
+    required: false,
   },
   userId: {
     type: Schema.Types.ObjectId,
@@ -14,4 +18,4 @@ const categorySchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("Category", categorySchema);
+module.exports = mongoose.model("ToDo", todoSchema);
