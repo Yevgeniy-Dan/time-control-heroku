@@ -27,6 +27,12 @@ exports.postEditCategory = (req, res, next) => {
       return category.save();
     })
     .then((editItem) => {
+      Todo.find({ "category.categoryId": categoryId }).then((todos) => {
+        todos.map((t) => {
+          t.category.title = editItem.title;
+          t.save();
+        });
+      });
       res.json(editItem);
     })
     .catch((err) => console.log(err));
@@ -84,8 +90,14 @@ exports.postAddTodo = (req, res, next) => {
 exports.postDeleteCategory = (req, res, next) => {
   const categoryId = req.body.categoryId;
   Category.findByIdAndRemove(categoryId)
-    .then((result) => {
-      res.json(result);
+    .then((deletedCategory) => {
+      Todo.find({ "category.categoryId:": categoryId }).then((todos) => {
+        todos.map((t) => {
+          t.category = null;
+          t.save();
+        });
+      });
+      res.json(deletedCategory);
     })
     .catch((err) => console.log(err));
 };
