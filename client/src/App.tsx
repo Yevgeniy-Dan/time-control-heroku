@@ -7,6 +7,7 @@ import NotFound from "./components/pages/NotFound";
 import Todos from "./components/Dashboard/Todo/Todos";
 import { fetchCategoriesData } from "./store/categories/categories-actions";
 import { useAppDispatch } from "./hooks/redux";
+import StopWatch from "./components/TimeControl/StopWatch/StopWatch";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -19,7 +20,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Navigate to="timer" />} />
-        {/* <Route path="timer" element={<Categories />} /> */}
+        <Route path="timer" element={<StopWatch />} />
         <Route path="categories" element={<Categories />} />
         <Route path="to-do-list" element={<Todos />} />
 
