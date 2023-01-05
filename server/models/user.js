@@ -11,32 +11,32 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  todoCart: {
-    items: [
-      {
-        todoId: {
-          type: Schema.Types.ObjectId,
-          ref: "ToDo",
-          required: true,
-        },
-      },
-    ],
-  },
+  // todoCart: {
+  //   items: [
+  //     {
+  //       todoId: {
+  //         type: Schema.Types.ObjectId,
+  //         ref: "ToDo",
+  //         required: true,
+  //       },
+  //     },
+  //   ],
+  // },
 });
 
-userSchema.methods.addToTodoCart = function (todo) {
-  const updatedTodoItems = [...this.todoCart.items];
+// userSchema.methods.addToTodoCart = function (todo) {
+//   const updatedTodoItems = [...this.todoCart.items];
 
-  updatedTodoItems.push({
-    todoId: todo._id,
-  });
+//   updatedTodoItems.push({
+//     todoId: todo._id,
+//   });
 
-  const updatedTodoCart = {
-    items: updatedTodoItems,
-  };
+//   const updatedTodoCart = {
+//     items: updatedTodoItems,
+//   };
 
-  this.todoCart = updatedTodoCart;
-  return this.save();
-};
+//   this.todoCart = updatedTodoCart;
+//   return this.save();
+// };
 
 module.exports = mongoose.model("User", userSchema);

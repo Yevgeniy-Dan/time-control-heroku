@@ -1,16 +1,10 @@
-import React, { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import { fetchTodosData } from "../../../store/todos/todos-actions";
+import React from "react";
+import { useAppSelector } from "../../../hooks/redux";
 import AddTodoForm from "./AddTodoForm";
 import TodoModel from "./Todo";
 
 const Todos: React.FC<React.PropsWithChildren<{}>> = (props) => {
-  const dispatch = useAppDispatch();
   const todos = useAppSelector((state) => state.todos);
-
-  useEffect(() => {
-    dispatch(fetchTodosData());
-  }, [dispatch]);
 
   return (
     <div>

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { Col, Row } from "react-bootstrap";
 
 import Timer from "../Timer/Timer";
 import ControlButtons from "../ControlButtons/ControlButtons";
 
 import classes from "./StopWatch.module.css";
-import { Col, Form, Row } from "react-bootstrap";
+
 import AppBadge from "../../UI/AppBadge";
+import AppSelectInput from "../../UI/AppSelectInput";
 
 const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const [isActive, setIsActive] = useState(false);
@@ -40,7 +42,7 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   return (
     <Row className={classes.stopWatchContainer}>
       <Col xs="6">
-        <Form.Control placeholder="Desciption" style={{ padding: "0" }} />
+        <AppSelectInput />
       </Col>
       <Col style={{ position: "relative" }}>
         <AppBadge title="Select" onClick={() => {}} />

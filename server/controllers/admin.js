@@ -72,6 +72,8 @@ exports.postAddTodo = (req, res, next) => {
         title: category.title,
         categoryId: category,
       };
+
+      category.addTodoItem(todo);
     }
 
     todo
@@ -104,9 +106,24 @@ exports.postDeleteCategory = (req, res, next) => {
 
 exports.postDeleteTodo = (req, res, next) => {
   const todoId = req.body.todoId;
+
+  // Category.populate("todos.items.todoId")
+  //   .execPopulate()
+  //   .then((category) => {
+  //     const todos = category.todos.items.map((t) => {
+  //       return t.todoId.toString() === todoId.toString();
+  //     });
+
+  //     console.log(category);
+
+  //     if (todos.length > 0) {
+  //       todos[0].removeTodoItem(todoId);
+  //     }
+  //   });
+
   Todo.findByIdAndRemove(todoId)
-    .then((result) => {
-      res.json(result);
+    .then((todo) => {
+      res.json(todo);
     })
     .catch((err) => console.log(err));
 };

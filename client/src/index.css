@@ -8,3 +8,26 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.css-1hb7zxy-IndicatorsContainer {
+  display: none !important;
+}
+
+.css-13cymwt-control,
+.css-13cymwt-control:hover,
+.css-13cymwt-control:focus {
+  border: 0 !important;
+}
+
+.css-1fdsijx-ValueContainer {
+  padding: 0 !important;
+}
+
+.css-t3ipsp-control {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.css-1fdsijx-ValueContainer {
+  cursor: text !important;
+}

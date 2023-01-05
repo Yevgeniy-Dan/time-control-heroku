@@ -8,12 +8,14 @@ import Todos from "./components/Dashboard/Todo/Todos";
 import { fetchCategoriesData } from "./store/categories/categories-actions";
 import { useAppDispatch } from "./hooks/redux";
 import StopWatch from "./components/TimeControl/StopWatch/StopWatch";
+import { fetchTodosData } from "./store/todos/todos-actions";
 
 function App() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchCategoriesData());
+    dispatch(fetchTodosData());
   }, [dispatch]);
 
   return (

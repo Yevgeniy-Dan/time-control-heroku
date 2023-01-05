@@ -30,6 +30,7 @@ const categoriesSlice = createSlice({
       state.items.push({
         _id: newItem._id,
         title: newItem.title,
+        todos: null,
       });
     },
     editCategory(state, action: PayloadAction<{ item: CategoryModel }>) {
