@@ -1,5 +1,6 @@
 const { mongoUri, port } = require("./config/config");
 const path = require("path");
+const qs = require("qs");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -13,6 +14,13 @@ const adminRoutes = require("./routes/admin");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.resolve(__dirname, "../client/build")));
+
+// app.post("*", (req, res) => {
+//   res.json({
+//     // req: qs.stringify({ af: { asd: 123, asfasf: "Asd" }, sd: "123" }),
+//     req: qs.parse(req.body.todo),
+//   });
+// });
 
 app.use((req, res, next) => {
   User.findById("63ad892e80430b9c48e9df81")

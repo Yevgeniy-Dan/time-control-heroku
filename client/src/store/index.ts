@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import categoriesSlice from "./categories/categories-slice";
+import timeRangesSlice from "./time-control/time-control-slice";
 import todosSlice from "./todos/todos-slice";
 
 const store = configureStore({
   reducer: {
     categories: categoriesSlice.reducer,
     todos: todosSlice.reducer,
+    timeRanges: timeRangesSlice.reducer,
   },
 });
 

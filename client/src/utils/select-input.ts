@@ -3,6 +3,8 @@ import Category from "../models/category";
 export interface TodoOption {
   readonly value: string;
   readonly label: string;
+  readonly categoryTitle: string;
+  readonly categoryId: string;
 }
 
 export interface GroupedOption {
@@ -19,11 +21,13 @@ export const groupedOptions = (
         return {
           value: todo.todoId,
           label: todo.title.toUpperCase(),
+          categoryTitle: c.title,
+          categoryId: c._id,
         };
       });
 
       return {
-        label: `${c.title.toUpperCase()}`,
+        label: `${c.title}`,
         options: categoryOptions,
       };
     }

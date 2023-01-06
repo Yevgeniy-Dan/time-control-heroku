@@ -10,6 +10,9 @@ router.get("/categories", adminController.getCategories);
 // /admin/add-todo => GET
 router.get("/todos", adminController.getTodos);
 
+// /admin/add-time => POST
+router.get("/time-ranges", adminController.getTimeRanges);
+
 // /admin/edit-category => POST
 router.post("/edit-category", adminController.postEditCategory);
 
@@ -24,5 +27,8 @@ router.post("/delete-category", adminController.postDeleteCategory);
 
 // /admin/delete-category => POST
 router.post("/delete-todo", adminController.postDeleteTodo);
+
+// /admin/add-time => POST
+router.post("/add-time", adminController.postAddTimeRange);
 
 module.exports = router;

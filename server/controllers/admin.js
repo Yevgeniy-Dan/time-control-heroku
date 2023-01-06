@@ -1,5 +1,8 @@
+const qs = require("qs");
+
 const Category = require("../models/category");
 const Todo = require("../models/todo");
+const TimeRanges = require("../models/time-range");
 
 exports.getCategories = (req, res, next) => {
   Category.find().then((categories) => {
@@ -13,6 +16,14 @@ exports.getTodos = (req, res, next) => {
   Todo.find().then((todos) => {
     res.json({
       todos: todos,
+    });
+  });
+};
+
+exports.getTimeRanges = (req, res, next) => {
+  TimeRanges.find().then((ranges) => {
+    res.json({
+      timeRanges: ranges,
     });
   });
 };
@@ -126,4 +137,20 @@ exports.postDeleteTodo = (req, res, next) => {
       res.json(todo);
     })
     .catch((err) => console.log(err));
+};
+
+exports.postAddTimeRange = (req, res, next) => {
+  const category = qs.parse(req.body.category);
+  const todo = qs.parse(req.body.todo);
+  const time = qs.parse(req.body.time);
+
+  const newTime = new TimeRanges({
+    category: category,
+    todo: todo,
+    time: time,
+  });
+
+  newTime.save().then((item) => {
+    res.json(item);
+  });
 };
