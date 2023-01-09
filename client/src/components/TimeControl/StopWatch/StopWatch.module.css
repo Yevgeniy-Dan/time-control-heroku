@@ -6,23 +6,3 @@
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   padding: 15px;
 }
-
-.stopWatchContainer input {
-  border: 0 !important;
-  padding: 0 !important;
-  outline: 0;
-}
-
-.stopWatchContainer input:focus {
-  box-shadow: inherit;
-}
-
-.todoInput_second {
-  /* border: 1px solid red !important; */
-  /* z-index: 500; */
-  outline: 0;
-}
-
-.todoInput_second:focus {
-  box-shadow: inherit;
-}

@@ -6,3 +6,13 @@
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   padding: 15px;
 }
+
+.container input {
+  border: 0 !important;
+  padding: 0 !important;
+  outline: 0;
+}
+
+.container input:focus {
+  box-shadow: inherit;
+}
