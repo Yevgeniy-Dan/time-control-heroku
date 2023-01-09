@@ -3,12 +3,10 @@ import CategoryModel from "../../models/category";
 
 type InitialState = {
   items: CategoryModel[];
-  changed: boolean;
 };
 
 const initialState: InitialState = {
   items: [],
-  changed: false,
 };
 
 const categoriesSlice = createSlice({

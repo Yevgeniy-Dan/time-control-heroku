@@ -1,5 +1,5 @@
 export type TimeTodo = {
-  todoId: string;
+  todoId?: string;
   title: string;
 };
 

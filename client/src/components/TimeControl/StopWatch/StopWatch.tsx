@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 
-import Timer from "../Timer/Timer";
-import ControlButtons from "../ControlButtons/ControlButtons";
-
 import classes from "./StopWatch.module.css";
-import type { Time, TimeCategory, TimeTodo } from "../../../models/time-range";
 
 import AppBadge from "../../UI/AppBadge";
 import AppSelectInput from "../../UI/AppSelectInput";
@@ -13,19 +9,25 @@ import {
   addTimeRange,
   fetchTimeRanges,
 } from "../../../store/time-control/time-control-actions";
+import ControlButtons from "../ControlButtons/ControlButtons";
+import Timer from "../Timer/Timer";
 import TimeRange from "../../../models/time-range";
-import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import type { Time, TimeCategory } from "../../../models/time-range";
+import { TodoOption } from "../../../utils/select-input";
+import { useAppDispatch } from "../../../hooks/redux";
+import TimeRangeList from "../TimeRangeList/TimeRangeList";
 
 const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
   const [time, setTime] = useState(12345678);
 
-  const [todo, setTodo] = useState<TimeTodo | null>(null);
+  const [todo, setTodo] = useState<TodoOption | null>(null);
   const [category, setCategory] = useState<TimeCategory | null>(null);
 
   const dispatch = useAppDispatch();
-  const timeRanges = useAppSelector((state) => state.timeRanges.ranges);
+
+  const [todoTitle, setTodoTitle] = useState<string>("");
 
   useEffect(() => {
     dispatch(fetchTimeRanges());
@@ -58,12 +60,34 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
       seconds: Math.floor((time / 1000) % 60),
     };
 
-    const timeRangeObj = new TimeRange(timeObj, todo, category);
+    let timeRangeObj;
+
+    if (!todo?.value) {
+      timeRangeObj = new TimeRange(
+        timeObj,
+        {
+          title: todoTitle,
+        },
+        null
+      );
+    } else {
+      timeRangeObj = new TimeRange(
+        timeObj,
+        { title: todo!.label, todoId: todo!.value },
+        category
+      );
+    }
 
     dispatch(addTimeRange(timeRangeObj));
 
+    clearValues();
+  };
+
+  const clearValues = () => {
     setIsActive(false);
     setTime(0);
+    setTodo(null);
+    setCategory(null);
   };
 
   return (
@@ -71,10 +95,16 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
       <Row className={classes.stopWatchContainer}>
         <Col xs="6">
           <AppSelectInput
-            onChange={(todo, category) => {
+            onSelect={(todo, category) => {
               setTodo(todo);
               setCategory(category);
             }}
+            onUserManualInput={(title: string) => {
+              setTodo(null);
+              setCategory(null);
+              setTodoTitle(title);
+            }}
+            todo={todo}
           />
         </Col>
         <Col style={{ position: "relative" }}>
@@ -94,7 +124,8 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
           />
         </Col>
       </Row>
-      {console.log(timeRanges)}
+
+      <TimeRangeList />
     </>
   );
 };

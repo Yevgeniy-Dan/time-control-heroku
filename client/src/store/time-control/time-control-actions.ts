@@ -39,7 +39,7 @@ export const addTimeRange = (range: TimeRange) => {
 
     try {
       const newTime = await addTimeRequest();
-      console.log(newTime.data);
+      dispatch(timeRangesActions.addTimeRange({ range: newTime.data }));
     } catch (error) {
       console.log(error);
     }

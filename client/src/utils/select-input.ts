@@ -1,20 +1,30 @@
 import Category from "../models/category";
+import Todo from "../models/todo";
 
 export interface TodoOption {
-  readonly value: string;
-  readonly label: string;
-  readonly categoryTitle: string;
-  readonly categoryId: string;
+  value: string;
+  label: string;
+  categoryTitle: string;
+  categoryId: string;
 }
+
+export const todoOptions = (todos: Todo[]): TodoOption[] => {
+  return todos.map((t) => {
+    return {
+      value: t._id,
+      label: t.title,
+      categoryId: "",
+      categoryTitle: "",
+    };
+  });
+};
 
 export interface GroupedOption {
-  readonly label: string;
-  readonly options: readonly TodoOption[];
+  label: string;
+  options: TodoOption[];
 }
 
-export const groupedOptions = (
-  categories: Category[]
-): readonly GroupedOption[] => {
+export const groupedOptions = (categories: Category[]): GroupedOption[] => {
   let groupedOptions: GroupedOption[] = categories.map((c) => {
     if (c.todos) {
       const categoryOptions: TodoOption[] = c.todos.map((todo) => {

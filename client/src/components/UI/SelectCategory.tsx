@@ -6,6 +6,7 @@ import CategoryModel from "../../models/category";
 
 import badgeClasses from "./AppBadge.module.css";
 import categoryClasses from "./SelectCategory.module.css";
+import selectClasses from "./AppSelectInput.module.css";
 
 const SelectCategory: React.FC<
   React.PropsWithChildren<{
@@ -19,7 +20,7 @@ const SelectCategory: React.FC<
   const wrapperRef = useRef(null);
 
   useOutsideClick(wrapperRef, onClose);
-  if (show)
+  if (show) {
     return (
       <div ref={wrapperRef} className={categoryClasses.categoryBox}>
         <ul>
@@ -45,6 +46,7 @@ const SelectCategory: React.FC<
         </ul>
       </div>
     );
+  }
 
   return null;
 };
