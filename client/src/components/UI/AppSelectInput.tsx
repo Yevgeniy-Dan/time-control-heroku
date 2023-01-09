@@ -33,6 +33,7 @@ const AppSelectInput: React.FC<
     <InputGroup className={classes.inputGroup}>
       <input
         ref={staticInputRef}
+        placeholder="What are you working on?"
         className="w-100"
         required
         type="text"
@@ -49,6 +50,7 @@ const AppSelectInput: React.FC<
       />
       <input
         ref={editableInputRef}
+        placeholder="What are you working on?"
         type="text"
         className={`${classes.todoInput} ${classes.todoInput_second} w-100`}
         onClick={(e) => {

@@ -12,7 +12,7 @@ import {
 import ControlButtons from "../ControlButtons/ControlButtons";
 import Timer from "../Timer/Timer";
 import TimeRange from "../../../models/time-range";
-import type { Time, TimeCategory } from "../../../models/time-range";
+import type { TimeCategory } from "../../../models/time-range";
 import { TodoOption } from "../../../utils/select-input";
 import { useAppDispatch } from "../../../hooks/redux";
 import TimeRangeList from "../TimeRangeList/TimeRangeList";
@@ -20,7 +20,7 @@ import TimeRangeList from "../TimeRangeList/TimeRangeList";
 const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
-  const [time, setTime] = useState(12345678);
+  const [time, setTime] = useState(360000000);
 
   const [todo, setTodo] = useState<TodoOption | null>(null);
   const [category, setCategory] = useState<TimeCategory | null>(null);
@@ -54,17 +54,11 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   };
 
   const handleReset = () => {
-    const timeObj: Time = {
-      hours: Math.floor((time / 3600000) % 60),
-      minutes: Math.floor((time / 60000) % 60),
-      seconds: Math.floor((time / 1000) % 60),
-    };
-
     let timeRangeObj;
 
     if (!todo?.value) {
       timeRangeObj = new TimeRange(
-        timeObj,
+        time,
         {
           title: todoTitle,
         },
@@ -72,7 +66,7 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
       );
     } else {
       timeRangeObj = new TimeRange(
-        timeObj,
+        time,
         { title: todo!.label, todoId: todo!.value },
         category
       );

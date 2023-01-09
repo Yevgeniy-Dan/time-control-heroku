@@ -147,10 +147,10 @@ exports.postAddTimeRange = (req, res, next) => {
   const newTime = new TimeRanges({
     category: category,
     todo: todo,
-    time: time,
+    time: time.value,
   });
 
   newTime.save().then((item) => {
-    res.json(item);
+    res.json({ ...item, time: item.time });
   });
 };

@@ -8,25 +8,19 @@ export type TimeCategory = {
   title: string;
 };
 
-export type Time = {
-  hours: number;
-  minutes: number;
-  seconds: number;
-};
-
 class TimeRange {
   _id: string;
   todo?: TimeTodo | null;
   category?: TimeCategory | null;
-  time: Time;
+  time: number;
 
   constructor(
-    time: Time,
+    time: number,
     todo: TimeTodo | null,
     category: TimeCategory | null
   ) {
     this._id = new Date().toISOString();
-    this.time = { ...time };
+    this.time = time;
     this.todo = todo ? { ...todo } : null;
     this.category = category ? { ...category } : null;
   }

@@ -31,7 +31,7 @@ export const addTimeRange = (range: TimeRange) => {
       const addedItem = await api.post("/admin/add-time", {
         todo: qs.stringify(range.todo),
         category: qs.stringify(range.category),
-        time: qs.stringify(range.time),
+        time: qs.stringify({ value: range.time }),
       });
 
       return addedItem;

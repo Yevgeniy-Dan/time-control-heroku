@@ -2,7 +2,6 @@ import React from "react";
 import { Col, Form, Row } from "react-bootstrap";
 
 import { useAppSelector } from "../../../hooks/redux";
-import { Time } from "../../../models/time-range";
 
 import AppBadge from "../../UI/AppBadge";
 import Timer from "../Timer/Timer";
@@ -12,20 +11,19 @@ import classes from "./TimeRangeList.module.css";
 const TimeRangeList: React.FC = () => {
   const timeRanges = useAppSelector((state) => state.timeRanges);
 
-  const convertTimeToSeconds = (time: Time) => {
-    return time.hours * 3600000 + time.minutes * 60000 + time.seconds * 1000;
-  };
-
   return (
-    <>
+    <div className={classes.container}>
       {timeRanges.ranges.map((t) => {
         return (
-          <Row className={classes.container} key={t._id}>
+          <Row className={classes.cardContainer} key={t._id}>
             <Col xs="6">
               <Form.Control
                 type="text"
                 value={t.todo?.title}
-                onChange={() => {}}
+                placeholder="No Title"
+                onChange={(e) => {
+                  e.preventDefault();
+                }}
               />
             </Col>
             <Col style={{ position: "relative" }}>
@@ -35,12 +33,12 @@ const TimeRangeList: React.FC = () => {
               />
             </Col>
             <Col>
-              <Timer time={convertTimeToSeconds(t.time)} />
+              <Timer time={t.time} />
             </Col>
           </Row>
         );
       })}
-    </>
+    </div>
   );
 };
 

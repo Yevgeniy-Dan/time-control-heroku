@@ -27,11 +27,7 @@ const timeRangeSchema = new Schema({
         required: true,
       },
     } | null,
-  time: {
-    hours: Number,
-    minutes: Number,
-    seconds: Number,
-  },
+  time: Number,
 });
 
 module.exports = mongoose.model("TimeRange", timeRangeSchema);

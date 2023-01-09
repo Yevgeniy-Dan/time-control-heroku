@@ -1,18 +1,22 @@
 .container {
+  padding-top: 50px;
+}
+
+.cardContainer {
   display: flex;
   align-items: center;
   max-width: 740px;
-  margin: auto;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
   padding: 15px;
+  margin: 20px auto;
 }
 
-.container input {
+.cardContainer input {
   border: 0 !important;
   padding: 0 !important;
   outline: 0;
 }
 
-.container input:focus {
+.cardContainer input:focus {
   box-shadow: inherit;
 }
