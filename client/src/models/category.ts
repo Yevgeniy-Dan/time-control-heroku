@@ -7,6 +7,7 @@ class Category {
         title: string;
       }[]
     | null;
+  color: string;
 
   constructor(
     title: string,

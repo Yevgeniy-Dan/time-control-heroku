@@ -1,4 +1,5 @@
 const qs = require("qs");
+const randomColor = require("randomcolor");
 
 const Category = require("../models/category");
 const Todo = require("../models/todo");
@@ -52,9 +53,12 @@ exports.postEditCategory = (req, res, next) => {
 exports.postAddCategory = (req, res, next) => {
   const title = req.body.title;
 
+  const color = randomColor();
+
   const category = new Category({
     title: title,
     userId: req.user,
+    color: color,
   });
 
   category
@@ -147,10 +151,13 @@ exports.postAddTimeRange = (req, res, next) => {
   const newTime = new TimeRanges({
     category: category,
     todo: todo,
-    time: time.value,
+    time: {
+      ms: time.ms,
+      percent: time.percent,
+    },
   });
 
   newTime.save().then((item) => {
-    res.json({ ...item, time: item.time });
+    res.json(item);
   });
 };

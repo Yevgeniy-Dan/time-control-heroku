@@ -20,6 +20,7 @@ const categorySchema = new Schema({
       },
     },
   ],
+  color: String,
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",

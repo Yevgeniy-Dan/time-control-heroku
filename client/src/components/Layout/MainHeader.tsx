@@ -11,8 +11,8 @@ const MainHeader = () => {
             </a>
           </li>
           <li>
-            <a href="/reports" className="nav-link px-2 link-dark">
-              Reports
+            <a href="/report" className="nav-link px-2 link-dark">
+              Report
             </a>
           </li>
           <li>

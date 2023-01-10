@@ -5,10 +5,7 @@ import classes from "./StopWatch.module.css";
 
 import AppBadge from "../../UI/AppBadge";
 import AppSelectInput from "../../UI/AppSelectInput";
-import {
-  addTimeRange,
-  fetchTimeRanges,
-} from "../../../store/time-control/time-control-actions";
+import { addTimeRange } from "../../../store/time-control/time-control-actions";
 import ControlButtons from "../ControlButtons/ControlButtons";
 import Timer from "../Timer/Timer";
 import TimeRange from "../../../models/time-range";
@@ -20,7 +17,7 @@ import TimeRangeList from "../TimeRangeList/TimeRangeList";
 const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
-  const [time, setTime] = useState(360000000);
+  const [time, setTime] = useState(12200020);
 
   const [todo, setTodo] = useState<TodoOption | null>(null);
   const [category, setCategory] = useState<TimeCategory | null>(null);
@@ -28,10 +25,6 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const dispatch = useAppDispatch();
 
   const [todoTitle, setTodoTitle] = useState<string>("");
-
-  useEffect(() => {
-    dispatch(fetchTimeRanges());
-  }, [dispatch]);
 
   useEffect(() => {
     let interval: any = null;

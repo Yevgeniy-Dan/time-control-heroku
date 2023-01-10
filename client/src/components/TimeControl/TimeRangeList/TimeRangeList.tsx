@@ -33,7 +33,7 @@ const TimeRangeList: React.FC = () => {
               />
             </Col>
             <Col>
-              <Timer time={t.time} />
+              <Timer time={t.time.ms} />
             </Col>
           </Row>
         );

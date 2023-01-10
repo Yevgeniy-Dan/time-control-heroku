@@ -27,7 +27,16 @@ const timeRangeSchema = new Schema({
         required: true,
       },
     } | null,
-  time: Number,
+  time: {
+    ms: {
+      type: Number,
+      required: true,
+    },
+    percent: {
+      type: Number,
+      required: true,
+    },
+  },
 });
 
 module.exports = mongoose.model("TimeRange", timeRangeSchema);

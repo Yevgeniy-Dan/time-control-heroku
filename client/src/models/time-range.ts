@@ -8,19 +8,29 @@ export type TimeCategory = {
   title: string;
 };
 
+export type Time = {
+  ms: number;
+  percent: number;
+};
+
+const dayInMs = 86400000;
+
 class TimeRange {
   _id: string;
   todo?: TimeTodo | null;
   category?: TimeCategory | null;
-  time: number;
+  time: Time;
 
   constructor(
-    time: number,
+    ms: number,
     todo: TimeTodo | null,
     category: TimeCategory | null
   ) {
     this._id = new Date().toISOString();
-    this.time = time;
+    this.time = {
+      ms: ms,
+      percent: +((ms / dayInMs) * 100).toFixed(2),
+    };
     this.todo = todo ? { ...todo } : null;
     this.category = category ? { ...category } : null;
   }

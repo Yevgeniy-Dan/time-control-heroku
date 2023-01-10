@@ -3,10 +3,12 @@ import CategoryModel from "../../models/category";
 
 type InitialState = {
   items: CategoryModel[];
+  isReplaced: boolean;
 };
 
 const initialState: InitialState = {
   items: [],
+  isReplaced: false,
 };
 
 const categoriesSlice = createSlice({
@@ -18,6 +20,7 @@ const categoriesSlice = createSlice({
       action: PayloadAction<{ items: CategoryModel[] }>
     ) {
       state.items = action.payload.items;
+      state.isReplaced = true;
     },
     addCategoryToCategories(
       state,
@@ -29,6 +32,7 @@ const categoriesSlice = createSlice({
         _id: newItem._id,
         title: newItem.title,
         todos: null,
+        color: newItem.color,
       });
     },
     editCategory(state, action: PayloadAction<{ item: CategoryModel }>) {

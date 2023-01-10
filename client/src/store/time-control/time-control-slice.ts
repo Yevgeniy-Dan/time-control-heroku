@@ -3,10 +3,32 @@ import TimeRange from "../../models/time-range";
 
 type InitialState = {
   ranges: TimeRange[];
+  isReplaced: boolean;
+  diagramObj: {
+    labels: string[];
+    datasets: {
+      data: number[];
+      backgroundColor: string[];
+      borderWidth: number;
+    }[];
+  };
+  diagramIsLoaded: boolean;
 };
 
 const initialState: InitialState = {
   ranges: [],
+  isReplaced: false,
+  diagramObj: {
+    labels: [],
+    datasets: [
+      {
+        data: [],
+        backgroundColor: [],
+        borderWidth: 0,
+      },
+    ],
+  },
+  diagramIsLoaded: false,
 };
 
 const timeRangesSlice = createSlice({
@@ -15,6 +37,15 @@ const timeRangesSlice = createSlice({
   reducers: {
     replaceTimeRanges(state, action: PayloadAction<{ ranges: TimeRange[] }>) {
       state.ranges = action.payload.ranges;
+      state.isReplaced = true;
+    },
+    createDiagramObject(
+      state,
+      action: PayloadAction<{ obj: InitialState["diagramObj"] }>
+    ) {
+      state.diagramObj = { ...action.payload.obj };
+      state.diagramIsLoaded = true;
+      console.log(state.diagramIsLoaded);
     },
     addTimeRange(state, action: PayloadAction<{ range: TimeRange }>) {
       const updatedRanges = state.ranges;
