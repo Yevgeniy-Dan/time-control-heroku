@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppSelector } from "../../../hooks/redux";
 import AddTodoForm from "./AddTodoForm";
-import TodoModel from "./Todo";
+import TodoCard from "./TodoCard";
 
 const Todos: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const todos = useAppSelector((state) => state.todos);
@@ -11,7 +11,7 @@ const Todos: React.FC<React.PropsWithChildren<{}>> = (props) => {
       <AddTodoForm />
 
       {todos.items.map((todo) => {
-        return <TodoModel todo={todo} key={todo._id} />;
+        return <TodoCard todo={todo} key={todo._id} />;
       })}
 
       {todos.items.length === 0 && (

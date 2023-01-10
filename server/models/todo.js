@@ -12,7 +12,7 @@ const todoSchema = new Schema({
       type: String,
       required: false,
     },
-    categoryId: {
+    _id: {
       type: Schema.Types.ObjectId,
       required: false,
     },

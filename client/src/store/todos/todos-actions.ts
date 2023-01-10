@@ -49,8 +49,8 @@ export const removeTodoData = (todo: TodoModel) => {
     const sendRequest = async () => {
       const response = await api.post("/admin/delete-todo", {
         todoId: todo._id,
+        categoryId: todo.category?._id,
       });
-
       return response.data;
     };
     try {
