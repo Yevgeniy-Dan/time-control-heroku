@@ -9,15 +9,15 @@ import { addTimeRange } from "../../../store/time-control/time-control-actions";
 import ControlButtons from "../ControlButtons/ControlButtons";
 import Timer from "../Timer/Timer";
 import TimeRange from "../../../models/time-range";
-import type { TimeCategory } from "../../../models/time-range";
 import { TodoOption } from "../../../utils/select-input";
+import { TimeCategory } from "../../../types/Time";
 import { useAppDispatch } from "../../../hooks/redux";
 import TimeRangeList from "../TimeRangeList/TimeRangeList";
 
 const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
-  const [time, setTime] = useState(12200020);
+  const [time, setTime] = useState(120020);
 
   const [todo, setTodo] = useState<TodoOption | null>(null);
   const [category, setCategory] = useState<TimeCategory | null>(null);

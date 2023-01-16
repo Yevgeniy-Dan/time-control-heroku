@@ -1,0 +1,17 @@
+.react-bootstrap-table {
+  .reset-expansion-style {
+    padding: 0;
+  }
+
+  .reset-expansion-style .rowContainer {
+    display: grid;
+    grid-template-columns: 9.8% 33.2% 25.6% 31.4%;
+    background-color: rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .reset-expansion-style p {
+    padding: 0.5rem 0.5rem;
+    margin: 0;
+  }
+}

@@ -1,19 +1,6 @@
-export type TimeTodo = {
-  todoId?: string;
-  title: string;
-};
+import { Time, TimeCategory, TimeTodo } from "../types/Time";
 
-export type TimeCategory = {
-  categoryId: string;
-  title: string;
-};
-
-export type Time = {
-  ms: number;
-  percent: number;
-};
-
-const dayInMs = 86400000;
+export const dayInMs = 86400000;
 
 class TimeRange {
   _id: string;

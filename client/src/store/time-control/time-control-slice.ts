@@ -9,6 +9,7 @@ type InitialState = {
     datasets: {
       data: number[];
       backgroundColor: string[];
+      hoverBackgroundColor: string[];
       borderWidth: number;
     }[];
   };
@@ -24,6 +25,7 @@ const initialState: InitialState = {
       {
         data: [],
         backgroundColor: [],
+        hoverBackgroundColor: [],
         borderWidth: 0,
       },
     ],
@@ -45,7 +47,6 @@ const timeRangesSlice = createSlice({
     ) {
       state.diagramObj = { ...action.payload.obj };
       state.diagramIsLoaded = true;
-      console.log(state.diagramIsLoaded);
     },
     addTimeRange(state, action: PayloadAction<{ range: TimeRange }>) {
       const updatedRanges = state.ranges;

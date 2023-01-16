@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { InputGroup } from "react-bootstrap";
+import { TimeCategory } from "../../types/Time";
 
-import { TimeCategory } from "../../models/time-range";
 import { TodoOption } from "../../utils/select-input";
 import AppGroupedSelectInput from "./AppGroupedSelectInput";
 
