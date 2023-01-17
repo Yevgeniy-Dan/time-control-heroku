@@ -163,11 +163,7 @@ export const getTableData = (
 
   const tableData: ReportTable[] = data.map((item) => {
     let updatedItem: ReportTable = {
-      categoryId: "",
-      categoryTitle: "",
-      color: "",
-      percent: 0,
-      time: 0,
+      ...item,
       todos: [],
     };
 

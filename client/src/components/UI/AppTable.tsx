@@ -39,7 +39,6 @@ const AppTable: React.FC<
     const time = formatTime(convertMs(data.time));
     return { ...data, time: time };
   });
-  console.log(records);
 
   const columns = [
     {
