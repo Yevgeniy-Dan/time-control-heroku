@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Chart, ArcElement, Title, Tooltip, Legend } from "chart.js";
+import { Chart, ArcElement, Title, Tooltip } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 
 import classes from "./Report.module.css";
@@ -12,7 +12,7 @@ import AppTable from "../../UI/AppTable";
 import { ReportTable } from "../../../types/Report";
 import { Col, Container, Row } from "react-bootstrap";
 
-Chart.register(ArcElement, Tooltip, Title, Legend);
+Chart.register(ArcElement, Tooltip, Title);
 
 const Report: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const categories = useAppSelector((state) => state.categories);

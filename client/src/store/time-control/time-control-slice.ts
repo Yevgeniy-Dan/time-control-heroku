@@ -54,6 +54,10 @@ const timeRangesSlice = createSlice({
 
       state.ranges = updatedRanges;
     },
+    removeTimeRange(state, action: PayloadAction<{ item: TimeRange }>) {
+      const id = action.payload.item._id;
+      state.ranges = state.ranges.filter((item) => item._id !== id);
+    },
   },
 });
 

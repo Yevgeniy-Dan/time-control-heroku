@@ -49,6 +49,24 @@ export const addTimeRange = (range: TimeRange) => {
   };
 };
 
+export const removeTimeRange = (range: TimeRange) => {
+  return async (dispatch: AppDispatch) => {
+    const sendRequest = async () => {
+      const response = await api.post("/admin/delete-time-range", {
+        timeRangeId: range._id,
+      });
+
+      return response.data;
+    };
+    try {
+      const removedItem = await sendRequest();
+      dispatch(timeRangesActions.removeTimeRange({ item: removedItem }));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
+
 export const createDiagramObject = () => {
   return async (dispatch: AppDispatch, getState: () => RootState) => {
     const categories = getState().categories.items;

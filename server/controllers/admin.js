@@ -143,6 +143,16 @@ exports.postDeleteTodo = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
+exports.postDeleteTimeRange = (req, res, next) => {
+  const id = req.body.timeRangeId;
+
+  TimeRanges.findByIdAndRemove(id)
+    .then((range) => {
+      res.json(range);
+    })
+    .catch((err) => console.log(err));
+};
+
 exports.postAddTimeRange = (req, res, next) => {
   const category = qs.parse(req.body.category);
   const todo = qs.parse(req.body.todo);

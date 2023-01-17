@@ -1,7 +1,9 @@
 import React from "react";
 import { Col, Form, Row } from "react-bootstrap";
 
-import { useAppSelector } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
+import TimeRange from "../../../models/time-range";
+import { removeTimeRange } from "../../../store/time-control/time-control-actions";
 
 import AppBadge from "../../UI/AppBadge";
 import Timer from "../Timer/Timer";
@@ -9,7 +11,13 @@ import Timer from "../Timer/Timer";
 import classes from "./TimeRangeList.module.css";
 
 const TimeRangeList: React.FC = () => {
+  const dispatch = useAppDispatch();
+
   const timeRanges = useAppSelector((state) => state.timeRanges);
+
+  const removeRange = (item: TimeRange) => {
+    dispatch(removeTimeRange(item));
+  };
 
   return (
     <div className={classes.container}>
@@ -34,6 +42,13 @@ const TimeRangeList: React.FC = () => {
             </Col>
             <Col>
               <Timer time={t.time.ms} />
+            </Col>
+            <Col xs={1}>
+              <i
+                onClick={() => removeRange(t)}
+                style={{ cursor: "pointer" }}
+                className="bi bi-trash text-danger"
+              ></i>
             </Col>
           </Row>
         );

@@ -28,6 +28,9 @@ router.post("/delete-category", adminController.postDeleteCategory);
 // /admin/delete-category => POST
 router.post("/delete-todo", adminController.postDeleteTodo);
 
+// /admin/delete-category => POST
+router.post("/delete-time-range", adminController.postDeleteTimeRange);
+
 // /admin/add-time => POST
 router.post("/add-time", adminController.postAddTimeRange);
 
