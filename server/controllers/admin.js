@@ -72,36 +72,52 @@ exports.postAddCategory = (req, res, next) => {
     });
 };
 
-exports.postAddTodo = (req, res, next) => {
+exports.postAddTodo = async (req, res, next) => {
   const title = req.body.title;
-  const categoryId = req.body.categoryId;
+  let categoryId = req.body.categoryId;
 
-  Category.findById(categoryId).then((category) => {
+  try {
     let todo = new Todo({
       title: title,
+      category: null,
       userId: req.user,
     });
 
-    if (category) {
-      todo.category = {
-        title: category.title,
-        _id: category._id,
-      };
+    if (!categoryId) {
+      const category = await Category.findOne({ title: "Other" });
 
-      category.addTodoItem(todo);
+      if (!category) {
+        const otherCategory = new Category({
+          title: "Other",
+          color: "#0000004c",
+          userId: req.user,
+          todos: [],
+        });
+
+        const newCategory = await otherCategory.save();
+        categoryId = newCategory._id;
+      } else {
+        categoryId = category._id;
+      }
     }
 
-    todo
-      .save()
-      .then((todo) => {
-        // req.user.addToTodoCart(todo);
-        return res.json(todo);
-      })
-      .catch((err) => {
-        console.log(err);
-        res.json(err);
-      });
-  });
+    const category = await Category.findById(categoryId);
+
+    todo.category = {
+      title: category.title,
+      _id: category._id,
+    };
+
+    await category.addTodoItem(todo);
+
+    const addedTodo = await todo.save();
+
+    // req.user.addToTodoCart(todo);
+    return res.json(addedTodo);
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
 };
 
 exports.postDeleteCategory = (req, res, next) => {
