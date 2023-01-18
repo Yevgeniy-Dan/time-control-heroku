@@ -5,7 +5,6 @@ import api from "../../http";
 import Category from "../../models/category";
 import TimeRange, { dayInMs } from "../../models/time-range";
 import { ReportDiagram, ReportTable } from "../../types/Report";
-import { convertMs } from "../../utils/time-converter";
 import { timeRangesActions } from "./time-control-slice";
 
 export const fetchTimeRanges = () => {
@@ -122,10 +121,9 @@ const getDiagramData = (categories: Category[], timeRanges: TimeRange[]) => {
         (sum, item) => sum + item.time.ms,
         0
       ),
-      percent: timeRangesWithoutCategories.reduce(
-        (sum, item) => sum + item.time.percent,
-        0
-      ),
+      percent: +timeRangesWithoutCategories
+        .reduce((sum, item) => sum + item.time.percent, 0)
+        .toFixed(2),
     });
   }
 

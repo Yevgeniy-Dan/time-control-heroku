@@ -29,25 +29,28 @@ exports.getTimeRanges = (req, res, next) => {
   });
 };
 
-exports.postEditCategory = (req, res, next) => {
+exports.postEditCategory = async (req, res, next) => {
   const categoryId = req.body.categoryId;
   const updatedTitle = req.body.title;
 
-  Category.findById(categoryId)
-    .then((category) => {
-      category.title = updatedTitle;
-      return category.save();
-    })
-    .then((editItem) => {
-      Todo.find({ "category.categoryId": categoryId }).then((todos) => {
-        todos.map((t) => {
-          t.category.title = editItem.title;
-          t.save();
-        });
-      });
-      res.json(editItem);
-    })
-    .catch((err) => console.log(err));
+  try {
+  } catch (err) {
+    console.log(err);
+  }
+
+  const category = await Category.findById(categoryId);
+
+  category.title = updatedTitle;
+  await category.save();
+
+  const todos = await Todo.find({ "category._id": categoryId });
+
+  todos.map(async (t) => {
+    t.category.title = category.title;
+    await t.save();
+  });
+
+  return res.json(category);
 };
 
 exports.postAddCategory = (req, res, next) => {

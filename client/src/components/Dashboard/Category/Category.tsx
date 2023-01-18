@@ -20,7 +20,7 @@ const Category: React.FC<
   const editTitleRef = useRef<HTMLInputElement>(null);
 
   const editCategoryHandle = () => {
-    console.log(editTitleRef.current!.value);
+    console.log(category);
     setIsEdit(false);
     dispatch(
       editCategoryData({
@@ -55,7 +55,7 @@ const Category: React.FC<
               }}
             />
           ) : (
-            <div onClick={() => setIsEdit(!isEdit)}>{category.title} </div>
+            <div onClick={() => setIsEdit(!isEdit)}>{category.title}</div>
           )}
         </Card.Title>
         <Button variant="danger" onClick={deleteCategoryHandle}>
