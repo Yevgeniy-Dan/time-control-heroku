@@ -34,18 +34,16 @@ const Report: React.FC<React.PropsWithChildren<{}>> = (props) => {
 
   return (
     <Container>
-      <Row className={classes.rowContainer}>
-        <Col className="justify-content-center" sm={8}>
+      <Row className="justify-content-around">
+        <Col sm={8} className="mb-sm-2">
           {tableData && <AppTable tableData={tableData} />}
         </Col>
-        <Col className="d-flex justify-content-center" sm={4}>
-          <div className={classes.diagramContainer}>
-            {!timeRanges.diagramIsLoaded ? (
-              <p>Loading...</p>
-            ) : (
-              <Doughnut data={timeRanges.diagramObj} />
-            )}
-          </div>
+        <Col sm={4} className={classes.diagramContainer}>
+          {!timeRanges.diagramIsLoaded ? (
+            <p>Loading...</p>
+          ) : (
+            <Doughnut data={timeRanges.diagramObj} />
+          )}
         </Col>
       </Row>
     </Container>
