@@ -92,10 +92,7 @@ export const createDiagramObject = () => {
   };
 };
 
-export const getDiagramData = (
-  categories: Category[],
-  timeRanges: TimeRange[]
-) => {
+const getDiagramData = (categories: Category[], timeRanges: TimeRange[]) => {
   const data = categories.map((c) => {
     const totalCategoryTime = timeRanges
       .filter((tr) => tr.category?.categoryId === c._id)
@@ -118,7 +115,7 @@ export const getDiagramData = (
 
   if (timeRangesWithoutCategories.length !== 0) {
     data.push({
-      categoryId: Math.floor(Math.random() * 100).toString(),
+      categoryId: Math.floor(Math.random() * 10000).toString(),
       categoryTitle: "Other",
       color: "#0000004c",
       time: timeRangesWithoutCategories.reduce(

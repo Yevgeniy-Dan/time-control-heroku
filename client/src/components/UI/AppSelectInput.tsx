@@ -71,10 +71,16 @@ const AppSelectInput: React.FC<
         onSelect={(data) => {
           staticInputRef!.current!.value = data.label;
           setIsManualInputEnabled(false);
-          onSelect(data, {
-            categoryId: data.categoryId,
-            title: data.categoryTitle,
-          });
+
+          const category =
+            data.categoryId && data.categoryTitle
+              ? {
+                  categoryId: data.categoryId,
+                  title: data.categoryTitle,
+                }
+              : null;
+
+          onSelect(data, category);
         }}
         selected={todo}
         show={show}

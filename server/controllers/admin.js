@@ -83,32 +83,32 @@ exports.postAddTodo = async (req, res, next) => {
       userId: req.user,
     });
 
-    if (!categoryId) {
-      const category = await Category.findOne({ title: "Other" });
+    if (categoryId) {
+      // const category = await Category.findOne({ title: "No Category" });
 
-      if (!category) {
-        const otherCategory = new Category({
-          title: "Other",
-          color: "#0000004c",
-          userId: req.user,
-          todos: [],
-        });
+      // if (!category) {
+      //   const noCategory = new Category({
+      //     title: "No Category",
+      //     color: "#0000004c",
+      //     userId: req.user,
+      //     todos: [],
+      //   });
 
-        const newCategory = await otherCategory.save();
-        categoryId = newCategory._id;
-      } else {
-        categoryId = category._id;
-      }
+      //   const newCategory = await noCategory.save();
+      //   categoryId = newCategory._id;
+      // } else {
+      //   categoryId = category._id;
+      // }
+
+      const category = await Category.findById(categoryId);
+
+      todo.category = {
+        title: category.title,
+        _id: category._id,
+      };
+
+      await category.addTodoItem(todo);
     }
-
-    const category = await Category.findById(categoryId);
-
-    todo.category = {
-      title: category.title,
-      _id: category._id,
-    };
-
-    await category.addTodoItem(todo);
 
     const addedTodo = await todo.save();
 

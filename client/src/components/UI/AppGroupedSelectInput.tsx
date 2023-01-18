@@ -16,10 +16,11 @@ const AppGroupedSelectInput: React.FC<
   const wrapperRef = useRef(null);
 
   const categories = useAppSelector((state) => state.categories.items);
+  const todos = useAppSelector((state) => state.todos.items);
 
   useOutsideClick(wrapperRef, onClose);
 
-  const options = groupedOptions(categories);
+  const options = groupedOptions(categories, todos);
   if (show) {
     return (
       <div ref={wrapperRef} className={classes.box}>

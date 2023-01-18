@@ -17,7 +17,7 @@ import TimeRangeList from "../TimeRangeList/TimeRangeList";
 const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
-  const [time, setTime] = useState(120020);
+  const [time, setTime] = useState(0);
 
   const [todo, setTodo] = useState<TodoOption | null>(null);
   const [category, setCategory] = useState<TimeCategory | null>(null);
@@ -83,8 +83,12 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
         <Col xs="6">
           <AppSelectInput
             onSelect={(todo, category) => {
-              setTodo(todo);
-              setCategory(category);
+              if (!category) {
+                setTodoTitle(todo!.label);
+              } else {
+                setTodo(todo);
+                setCategory(category);
+              }
             }}
             onUserManualInput={(title: string) => {
               setTodo(null);

@@ -6,7 +6,6 @@ import CategoryModel from "../../models/category";
 
 import badgeClasses from "./AppBadge.module.css";
 import categoryClasses from "./SelectCategory.module.css";
-import selectClasses from "./AppSelectInput.module.css";
 
 const SelectCategory: React.FC<
   React.PropsWithChildren<{

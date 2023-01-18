@@ -4,27 +4,19 @@ import Todo from "../models/todo";
 export interface TodoOption {
   value: string;
   label: string;
-  categoryTitle: string;
-  categoryId: string;
+  categoryTitle: string | null;
+  categoryId: string | null;
 }
-
-export const todoOptions = (todos: Todo[]): TodoOption[] => {
-  return todos.map((t) => {
-    return {
-      value: t._id,
-      label: t.title,
-      categoryId: "",
-      categoryTitle: "",
-    };
-  });
-};
 
 export interface GroupedOption {
   label: string;
   options: TodoOption[];
 }
 
-export const groupedOptions = (categories: Category[]): GroupedOption[] => {
+export const groupedOptions = (
+  categories: Category[],
+  todos: Todo[]
+): GroupedOption[] => {
   let groupedOptions: GroupedOption[] = categories.map((c) => {
     if (c.todos) {
       const categoryOptions: TodoOption[] = c.todos.map((todo) => {
@@ -46,6 +38,22 @@ export const groupedOptions = (categories: Category[]): GroupedOption[] => {
       label: "",
       options: [],
     };
+  });
+
+  const todoOptions: TodoOption[] = todos
+    .filter((t) => !t.category)
+    .map((t) => {
+      return {
+        value: t._id,
+        label: t.title,
+        categoryId: null,
+        categoryTitle: null,
+      };
+    });
+
+  groupedOptions.push({
+    label: "Without Category",
+    options: todoOptions,
   });
 
   groupedOptions = groupedOptions.filter((option) => {
