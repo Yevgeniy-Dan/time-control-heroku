@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { Outlet } from "react-router-dom";
 
-import MainHeader from "./MainHeader";
+import MainHeader from "../components/Layout/MainHeader";
 
 const Layout: React.FC = () => {
   return (
