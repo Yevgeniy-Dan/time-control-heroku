@@ -1,110 +1,112 @@
 const qs = require("qs");
 const randomColor = require("randomcolor");
+const asyncHandler = require("express-async-handler");
 
 const Category = require("../models/category");
 const Todo = require("../models/todo");
 const TimeRanges = require("../models/time-range");
 
-exports.getCategories = (req, res, next) => {
-  Category.find().then((categories) => {
-    res.json({
-      categories: categories,
-    });
+exports.getCategories = asyncHandler(async (req, res) => {
+  const categories = await Category.find({ userId: req.user.id });
+
+  res.status(200).json({
+    categories: categories,
   });
-};
+});
 
-exports.getTodos = (req, res, next) => {
-  Todo.find().then((todos) => {
-    res.json({
-      todos: todos,
-    });
+exports.getTodos = asyncHandler(async (req, res) => {
+  const todos = await Todo.find({ user: req.user.id });
+
+  res.status(200).json({
+    todos: todos,
   });
-};
+});
 
-exports.getTimeRanges = (req, res, next) => {
-  TimeRanges.find().then((ranges) => {
-    res.json({
-      timeRanges: ranges,
-    });
+exports.getTimeRanges = asyncHandler(async (req, res, next) => {
+  const timRanges = await TimeRanges.find({ userId: req.user.id });
+
+  res.status(200).json({
+    timeRanges: ranges,
   });
-};
+});
 
-exports.postEditCategory = async (req, res, next) => {
-  const categoryId = req.body.categoryId;
-  const updatedTitle = req.body.title;
+exports.postEditCategory = asyncHandler(async (req, res, next) => {
+  const { categoryId, updatedTitle } = req.body;
 
-  try {
-  } catch (err) {
-    console.log(err);
+  const updatedCategory = await Category.findById(categoryId);
+
+  if (!updatedCategory) {
+    res.status(400);
+    throw new Error("Category not found");
   }
 
-  const category = await Category.findById(categoryId);
+  if (!req.user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
 
-  category.title = updatedTitle;
-  await category.save();
+  if (updatedCategory.userId.toString() !== req.user.id) {
+    res.status(401);
+    throw new Error("User not authorized");
+  }
+
+  updatedCategory.title = updatedTitle;
+  await updatedCategory.save();
 
   const todos = await Todo.find({ "category._id": categoryId });
 
   todos.map(async (t) => {
-    t.category.title = category.title;
+    t.category.title = updatedCategory.title;
     await t.save();
   });
 
-  return res.json(category);
-};
+  res.status(200).json(updatedCategory);
+});
 
-exports.postAddCategory = (req, res, next) => {
-  const title = req.body.title;
+exports.postAddCategory = asyncHandler(async (req, res) => {
+  const { title } = req.body;
 
   const color = randomColor();
 
-  const category = new Category({
+  const category = await Category.create({
     title: title,
-    userId: req.user,
+    userId: req.user.id,
     color: color,
   });
 
-  category
-    .save()
-    .then((category) => {
-      res.json(category);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.json(err);
-    });
-};
+  res.status(200).json(category);
+});
 
-exports.postAddTodo = async (req, res, next) => {
-  const title = req.body.title;
-  let categoryId = req.body.categoryId;
+exports.postAddTodo = asyncHandler(async (req, res) => {
+  const { title } = req.body;
+  let { categoryId } = req.body;
 
-  try {
-    let todo = new Todo({
-      title: title,
-      category: null,
-      userId: req.user,
-    });
+  let todo = new Todo({
+    title: title,
+    category: null,
+    userId: req.user.id,
+  });
 
-    if (categoryId) {
-      // const category = await Category.findOne({ title: "No Category" });
+  if (categoryId) {
+    // const category = await Category.findOne({ title: "No Category" });
 
-      // if (!category) {
-      //   const noCategory = new Category({
-      //     title: "No Category",
-      //     color: "#0000004c",
-      //     userId: req.user,
-      //     todos: [],
-      //   });
+    // if (!category) {
+    //   const noCategory = new Category({
+    //     title: "No Category",
+    //     color: "#0000004c",
+    //     userId: req.user,
+    //     todos: [],
+    //   });
 
-      //   const newCategory = await noCategory.save();
-      //   categoryId = newCategory._id;
-      // } else {
-      //   categoryId = category._id;
-      // }
+    //   const newCategory = await noCategory.save();
+    //   categoryId = newCategory._id;
+    // } else {
+    //   categoryId = category._id;
+    // }
 
-      const category = await Category.findById(categoryId);
+    const category = await Category.findById(categoryId);
 
+    if (category) {
       todo.category = {
         title: category.title,
         _id: category._id,
@@ -112,67 +114,15 @@ exports.postAddTodo = async (req, res, next) => {
 
       await category.addTodoItem(todo);
     }
-
-    const addedTodo = await todo.save();
-
-    // req.user.addToTodoCart(todo);
-    return res.json(addedTodo);
-  } catch (err) {
-    console.log(err);
-    res.json(err);
-  }
-};
-
-exports.postDeleteCategory = (req, res, next) => {
-  const categoryId = req.body.categoryId;
-  Category.findByIdAndRemove(categoryId)
-    .then((deletedCategory) => {
-      Todo.find({ "category.categoryId:": categoryId }).then((todos) => {
-        todos.map((t) => {
-          t.category = null;
-          t.save();
-        });
-      });
-      res.json(deletedCategory);
-    })
-    .catch((err) => console.log(err));
-};
-
-exports.postDeleteTodo = (req, res, next) => {
-  const todoId = req.body.todoId;
-  const categoryId = req.body.categoryId;
-
-  if (categoryId) {
-    Category.findById(categoryId)
-      .populate("todos")
-      .exec()
-      .then((categories) => {
-        const updatedTodos = categories.todos.filter((c) => {
-          return c.todoId.toString() !== todoId.toString();
-        });
-        categories.todos = updatedTodos;
-        categories.save();
-      });
   }
 
-  Todo.findByIdAndRemove(todoId)
-    .then((todo) => {
-      res.json(todo);
-    })
-    .catch((err) => console.log(err));
-};
+  const addedTodo = await todo.save();
 
-exports.postDeleteTimeRange = (req, res, next) => {
-  const id = req.body.timeRangeId;
+  // req.user.addToTodoCart(todo);
+  res.status(200).json(addedTodo);
+});
 
-  TimeRanges.findByIdAndRemove(id)
-    .then((range) => {
-      res.json(range);
-    })
-    .catch((err) => console.log(err));
-};
-
-exports.postAddTimeRange = (req, res, next) => {
+exports.postAddTimeRange = asyncHandler(async (req, res) => {
   const category = qs.parse(req.body.category);
   const todo = qs.parse(req.body.todo);
   const time = qs.parse(req.body.time);
@@ -184,9 +134,92 @@ exports.postAddTimeRange = (req, res, next) => {
       ms: time.ms,
       percent: time.percent,
     },
+    userId: req.user.id,
   });
 
-  newTime.save().then((item) => {
-    res.json(item);
+  await newTime.save();
+
+  res.status(200).json(newTime);
+});
+
+exports.postDeleteCategory = asyncHandler(async (req, res) => {
+  const { categoryId } = req.body;
+
+  const category = Category.findById(categoryId);
+
+  if (!category) {
+    res.status(400);
+    throw new Error("Category not found");
+  }
+
+  if (!req.user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
+  if (category.userId.toString() !== req.user.id) {
+    res.status(401);
+    throw new Error("User not authorized");
+  }
+
+  await category.remove();
+
+  const todos = await Todo.find({ "category.categoryId: ": categoryId });
+
+  todos.map((t) => {
+    t.category = null;
+    t.save();
   });
-};
+
+  res.status(200).json({ id: categoryId });
+});
+
+exports.postDeleteTodo = asyncHandler(async (req, res) => {
+  const { todoId, categoryId } = req.body;
+
+  if (!req.user) {
+    res.status(400);
+    throw new Error("User not found");
+  }
+
+  const removedTodo = await Todo.findById(todoId);
+
+  if (removedTodo.userId.toString() !== req.user.id) {
+    res.status(401);
+    throw new Error("User not authorized");
+  }
+
+  await removedTodo.remove();
+
+  if (categoryId) {
+    const category = await Category.findById(categoryId)
+      .populate("todos")
+      .exec();
+
+    const updatedTodos = category.todos.filter((c) => {
+      return c.todoId.toString() !== todoId.toString();
+    });
+    category.todos = updatedTodos;
+    await category.save();
+  }
+
+  res.status(200).json({ id: todoId });
+});
+
+exports.postDeleteTimeRange = asyncHandler(async (req, res) => {
+  const id = req.body.timeRangeId;
+
+  if (!req.user) {
+    res.status(400);
+    throw new Error("User not found");
+  }
+
+  const timeRange = await TimeRanges.findById(id);
+
+  if (timeRange.userId.toString() !== req.user.id) {
+    res.status(401);
+    throw new Error("User not authorized");
+  }
+
+  res.status(200).json({ id });
+});

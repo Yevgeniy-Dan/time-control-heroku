@@ -4,34 +4,29 @@ const adminController = require("../controllers/admin");
 
 const router = express.Router();
 
-// /admin/categories => GET
-router.get("/categories", adminController.getCategories);
+const { protect } = require("../middleware/auth");
 
-// /admin/add-todo => GET
-router.get("/todos", adminController.getTodos);
+/* --------------  Category  --------------*/
+router.get("/categories", protect, adminController.getCategories);
 
-// /admin/add-time => POST
-router.get("/time-ranges", adminController.getTimeRanges);
+router.post("/add-category", protect, adminController.postAddCategory);
 
-// /admin/edit-category => POST
-router.post("/edit-category", adminController.postEditCategory);
+router.post("/delete-category", protect, adminController.postDeleteCategory);
 
-// /admin/add-category => POST
-router.post("/add-category", adminController.postAddCategory);
+router.post("/edit-category", protect, adminController.postEditCategory);
 
-// /admin/add-todo => POST
-router.post("/add-todo", adminController.postAddTodo);
+/* --------------  ToDo  --------------*/
+router.get("/todos", protect, adminController.getTodos);
 
-// /admin/delete-category => POST
-router.post("/delete-category", adminController.postDeleteCategory);
+router.post("/add-todo", protect, adminController.postAddTodo);
 
-// /admin/delete-category => POST
-router.post("/delete-todo", adminController.postDeleteTodo);
+router.post("/delete-todo", protect, adminController.postDeleteTodo);
+/* --------------  Time Ranges  --------------*/
 
-// /admin/delete-category => POST
-router.post("/delete-time-range", adminController.postDeleteTimeRange);
+router.get("/time-ranges", protect, adminController.getTimeRanges);
 
-// /admin/add-time => POST
-router.post("/add-time", adminController.postAddTimeRange);
+router.post("/add-time", protect, adminController.postAddTimeRange);
+
+router.post("/delete-time-range", protect, adminController.postDeleteTimeRange);
 
 module.exports = router;
