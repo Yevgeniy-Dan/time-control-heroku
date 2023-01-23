@@ -7,7 +7,7 @@ const Todo = require("../models/todo");
 const TimeRanges = require("../models/time-range");
 
 exports.getCategories = asyncHandler(async (req, res) => {
-  const categories = await Category.find({ userId: req.user.id });
+  const categories = await Category.find({ userId: req.user._id });
 
   res.status(200).json({
     categories: categories,
@@ -15,7 +15,7 @@ exports.getCategories = asyncHandler(async (req, res) => {
 });
 
 exports.getTodos = asyncHandler(async (req, res) => {
-  const todos = await Todo.find({ user: req.user.id });
+  const todos = await Todo.find({ userId: req.user._id });
 
   res.status(200).json({
     todos: todos,
@@ -23,7 +23,7 @@ exports.getTodos = asyncHandler(async (req, res) => {
 });
 
 exports.getTimeRanges = asyncHandler(async (req, res, next) => {
-  const timRanges = await TimeRanges.find({ userId: req.user.id });
+  const ranges = await TimeRanges.find({ userId: req.user._id });
 
   res.status(200).json({
     timeRanges: ranges,
@@ -45,7 +45,7 @@ exports.postEditCategory = asyncHandler(async (req, res, next) => {
     throw new Error("User not found");
   }
 
-  if (updatedCategory.userId.toString() !== req.user.id) {
+  if (updatedCategory.userId.toString() !== req.user._id.toString()) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -70,7 +70,7 @@ exports.postAddCategory = asyncHandler(async (req, res) => {
 
   const category = await Category.create({
     title: title,
-    userId: req.user.id,
+    userId: req.user._id,
     color: color,
   });
 
@@ -84,7 +84,7 @@ exports.postAddTodo = asyncHandler(async (req, res) => {
   let todo = new Todo({
     title: title,
     category: null,
-    userId: req.user.id,
+    userId: req.user._id,
   });
 
   if (categoryId) {
@@ -134,7 +134,7 @@ exports.postAddTimeRange = asyncHandler(async (req, res) => {
       ms: time.ms,
       percent: time.percent,
     },
-    userId: req.user.id,
+    userId: req.user._id,
   });
 
   await newTime.save();
@@ -145,7 +145,7 @@ exports.postAddTimeRange = asyncHandler(async (req, res) => {
 exports.postDeleteCategory = asyncHandler(async (req, res) => {
   const { categoryId } = req.body;
 
-  const category = Category.findById(categoryId);
+  const category = await Category.findById(categoryId);
 
   if (!category) {
     res.status(400);
@@ -157,12 +157,12 @@ exports.postDeleteCategory = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  if (category.userId.toString() !== req.user.id) {
+  if (category.userId.toString() !== req.user._id.toString()) {
     res.status(401);
     throw new Error("User not authorized");
   }
 
-  await category.remove();
+  const removedCategory = await category.remove();
 
   const todos = await Todo.find({ "category.categoryId: ": categoryId });
 
@@ -171,7 +171,7 @@ exports.postDeleteCategory = asyncHandler(async (req, res) => {
     t.save();
   });
 
-  res.status(200).json({ id: categoryId });
+  res.status(200).json(removedCategory);
 });
 
 exports.postDeleteTodo = asyncHandler(async (req, res) => {
@@ -184,7 +184,7 @@ exports.postDeleteTodo = asyncHandler(async (req, res) => {
 
   const removedTodo = await Todo.findById(todoId);
 
-  if (removedTodo.userId.toString() !== req.user.id) {
+  if (removedTodo.userId.toString() !== req.user._id.toString()) {
     res.status(401);
     throw new Error("User not authorized");
   }
@@ -203,7 +203,7 @@ exports.postDeleteTodo = asyncHandler(async (req, res) => {
     await category.save();
   }
 
-  res.status(200).json({ id: todoId });
+  res.status(200).json(removedTodo);
 });
 
 exports.postDeleteTimeRange = asyncHandler(async (req, res) => {
@@ -216,10 +216,12 @@ exports.postDeleteTimeRange = asyncHandler(async (req, res) => {
 
   const timeRange = await TimeRanges.findById(id);
 
-  if (timeRange.userId.toString() !== req.user.id) {
+  if (timeRange.userId.toString() !== req.user._id.toString()) {
     res.status(401);
     throw new Error("User not authorized");
   }
 
-  res.status(200).json({ id });
+  const removedTimeRange = await timeRange.remove();
+
+  res.status(200).json(removedTimeRange);
 });

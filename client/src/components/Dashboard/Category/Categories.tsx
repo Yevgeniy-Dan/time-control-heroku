@@ -1,6 +1,6 @@
 import Category from "./Category";
-import { useAppSelector } from "../../../hooks/redux";
 import AddCategoryForm from "./AddCategoryForm";
+import { useAppSelector } from "../../../hooks/redux";
 
 const Categories = () => {
   const categories = useAppSelector((state) => state.categories);
@@ -8,7 +8,6 @@ const Categories = () => {
   return (
     <div>
       <AddCategoryForm />
-
       {categories.items.map((c) => {
         return <Category category={c} key={c._id} />;
       })}

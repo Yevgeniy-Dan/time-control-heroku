@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import { authActions, register } from "../../store/auth/auth-slice";
 
-import classes from "./Auth.module.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import AppSpinner from "../UI/AppSpinner";
 
 const Register: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const [formData, setFormData] = useState({
@@ -12,6 +18,25 @@ const Register: React.FC<React.PropsWithChildren<{}>> = (props) => {
 
   const { name, email, password, password2 } = formData;
 
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const { user, isError, isLoading, isSuccess, message } = useAppSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+
+    if (isSuccess || user) {
+      navigate("/");
+    }
+
+    dispatch(authActions.reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -21,7 +46,22 @@ const Register: React.FC<React.PropsWithChildren<{}>> = (props) => {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (password !== password2) {
+      toast.error("Passwords do not match");
+    } else {
+      const userData = {
+        name,
+        email,
+        password,
+      };
+      dispatch(register(userData));
+    }
   };
+
+  if (isLoading) {
+    return <AppSpinner />;
+  }
 
   return (
     <div className="container">
@@ -31,7 +71,7 @@ const Register: React.FC<React.PropsWithChildren<{}>> = (props) => {
       </section>
 
       <section className="form">
-        <form onSubmit={onSubmit} className={classes.form}>
+        <form onSubmit={onSubmit}>
           <div className="form-group">
             <input
               type="text"
@@ -80,6 +120,7 @@ const Register: React.FC<React.PropsWithChildren<{}>> = (props) => {
           </div>
         </form>
       </section>
+      {/* <ToastContainer /> */}
     </div>
   );
 };
