@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 
 import { fetchCategoriesData } from "../store/categories/categories-actions";
-import { fetchTimeRanges } from "../store/time-control/time-control-actions";
+import {
+  createDiagramObject,
+  createTableObject,
+  fetchTimeRanges,
+} from "../store/time-control/time-control-actions";
 import { fetchTodosData } from "../store/todos/todos-actions";
 
 const RequireAuth: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
@@ -12,6 +16,8 @@ const RequireAuth: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const navigate = useNavigate();
 
   const { user } = useAppSelector((state) => state.auth);
+  const categories = useAppSelector((state) => state.categories);
+  const timeRanges = useAppSelector((state) => state.timeRanges);
 
   useEffect(() => {
     if (!user) {
@@ -22,6 +28,17 @@ const RequireAuth: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
       dispatch(fetchTimeRanges());
     }
   }, [user, navigate, dispatch]);
+
+  useEffect(() => {
+    if (
+      categories.isReplaced &&
+      timeRanges.isReplaced &&
+      !timeRanges.diagramIsLoaded
+    ) {
+      dispatch(createDiagramObject());
+      dispatch(createTableObject());
+    }
+  }, [categories, timeRanges, dispatch]);
 
   return <>{children}</>;
 };

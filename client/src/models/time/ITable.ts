@@ -1,12 +1,4 @@
-export type ReportDiagram = {
-  categoryId: string;
-  categoryTitle: string;
-  color: string;
-  time: number;
-  percent: number;
-};
-
-export type ReportTable = {
+export interface ITable {
   categoryId: string;
   todos?:
     | {
@@ -19,4 +11,4 @@ export type ReportTable = {
   time: number;
   percent: number;
   color: string;
-};
+}

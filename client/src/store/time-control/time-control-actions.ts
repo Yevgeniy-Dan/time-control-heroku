@@ -4,7 +4,8 @@ import { AppDispatch, RootState } from "..";
 import api from "../../http";
 import Category from "../../models/category";
 import TimeRange, { dayInMs } from "../../models/time-range";
-import { ReportDiagram, ReportTable } from "../../types/Report";
+import { IReportDiagram } from "../../models/time/IDiagram";
+import { ITable } from "../../models/time/ITable";
 import { timeRangesActions } from "./time-control-slice";
 
 export const fetchTimeRanges = () => {
@@ -71,7 +72,7 @@ export const createDiagramObject = () => {
     const categories = getState().categories.items;
     const timeRanges = getState().timeRanges.ranges;
 
-    const tableData: ReportDiagram[] = getDiagramData(categories, timeRanges);
+    const tableData: IReportDiagram[] = getDiagramData(categories, timeRanges);
 
     const diagramObj = {
       labels: tableData.map(({ categoryTitle: title }) => title),
@@ -88,6 +89,56 @@ export const createDiagramObject = () => {
     };
 
     dispatch(timeRangesActions.createDiagramObject({ obj: { ...diagramObj } }));
+  };
+};
+
+export const createTableObject = () => {
+  return async (dispatch: AppDispatch, getState: () => RootState) => {
+    const categories = getState().categories.items;
+    const timeRanges = getState().timeRanges.ranges;
+
+    const data = getDiagramData(categories, timeRanges);
+
+    const tableData: ITable[] = data.map((item) => {
+      let updatedItem: ITable = {
+        ...item,
+        todos: [],
+      };
+
+      const todos = timeRanges
+        .filter((r) => r.category?.categoryId === item.categoryId)
+        .map((todo) => {
+          return {
+            todoTitle: todo.todo ? todo.todo.title : "No Title",
+            time: todo.time.ms,
+            percent: todo.time.percent,
+          };
+        });
+
+      const todosWithoutCategory = timeRanges
+        .filter((r) => !r.category)
+        .map((todo) => {
+          return {
+            todoTitle: todo.todo ? todo.todo.title : "No Title",
+            time: todo.time.ms,
+            percent: todo.time.percent,
+          };
+        });
+
+      if (todos.length === 0) {
+        if (item.categoryTitle === "Unfilled time") {
+          updatedItem = { ...item, todos: [] };
+        } else if (item.categoryTitle === "Other") {
+          updatedItem = { ...item, todos: [...todosWithoutCategory] };
+        }
+      } else {
+        updatedItem = { ...item, todos: [...todos] };
+      }
+
+      return updatedItem;
+    });
+
+    dispatch(timeRangesActions.createTableObject(tableData));
   };
 };
 
@@ -148,52 +199,4 @@ const getDiagramData = (categories: Category[], timeRanges: TimeRange[]) => {
   }
 
   return data;
-};
-
-export const getTableData = (
-  categories: Category[],
-  timeRanges: TimeRange[]
-) => {
-  const data = getDiagramData(categories, timeRanges);
-
-  const tableData: ReportTable[] = data.map((item) => {
-    let updatedItem: ReportTable = {
-      ...item,
-      todos: [],
-    };
-
-    const todos = timeRanges
-      .filter((r) => r.category?.categoryId === item.categoryId)
-      .map((todo) => {
-        return {
-          todoTitle: todo.todo ? todo.todo.title : "No Title",
-          time: todo.time.ms,
-          percent: todo.time.percent,
-        };
-      });
-
-    const todosWithoutCategory = timeRanges
-      .filter((r) => !r.category)
-      .map((todo) => {
-        return {
-          todoTitle: todo.todo ? todo.todo.title : "No Title",
-          time: todo.time.ms,
-          percent: todo.time.percent,
-        };
-      });
-
-    if (todos.length === 0) {
-      if (item.categoryTitle === "Unfilled time") {
-        updatedItem = { ...item, todos: [] };
-      } else if (item.categoryTitle === "Other") {
-        updatedItem = { ...item, todos: [...todosWithoutCategory] };
-      }
-    } else {
-      updatedItem = { ...item, todos: [...todos] };
-    }
-
-    return updatedItem;
-  });
-
-  return tableData;
 };

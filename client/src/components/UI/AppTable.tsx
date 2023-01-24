@@ -3,7 +3,7 @@ import BootstrapTable, {
   ColumnDescription,
   ExpandRowProps,
 } from "react-bootstrap-table-next";
-import { ReportTable } from "../../types/Report";
+import { ITable } from "../../models/time/ITable";
 import { TimeDisplay } from "../../types/Time";
 import { convertMs } from "../../utils/time-converter";
 
@@ -32,9 +32,9 @@ const formatTime = (time: TimeDisplay): string => {
   return formatted;
 };
 
-const AppTable: React.FC<
-  React.PropsWithChildren<{ tableData: ReportTable[] }>
-> = ({ tableData }) => {
+const AppTable: React.FC<React.PropsWithChildren<{ tableData: ITable[] }>> = ({
+  tableData,
+}) => {
   const records = tableData.map((data) => {
     const time = formatTime(convertMs(data.time));
     return { ...data, time: time };
@@ -58,7 +58,7 @@ const AppTable: React.FC<
   ];
 
   const expandRow: ExpandRowProps<any, number> | undefined = {
-    renderer: (row: ReportTable, rowIndex) => {
+    renderer: (row: ITable, rowIndex) => {
       return (
         <React.Fragment>
           {row.todos?.map((todo) => {

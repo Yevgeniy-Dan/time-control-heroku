@@ -31,11 +31,11 @@ exports.getTimeRanges = asyncHandler(async (req, res, next) => {
 });
 
 exports.postEditCategory = asyncHandler(async (req, res, next) => {
-  const { categoryId, updatedTitle } = req.body;
+  const { categoryId, title } = req.body;
 
-  const updatedCategory = await Category.findById(categoryId);
+  const category = await Category.findById(categoryId);
 
-  if (!updatedCategory) {
+  if (!category) {
     res.status(400);
     throw new Error("Category not found");
   }
@@ -45,22 +45,22 @@ exports.postEditCategory = asyncHandler(async (req, res, next) => {
     throw new Error("User not found");
   }
 
-  if (updatedCategory.userId.toString() !== req.user._id.toString()) {
+  if (category.userId.toString() !== req.user._id.toString()) {
     res.status(401);
     throw new Error("User not authorized");
   }
 
-  updatedCategory.title = updatedTitle;
-  await updatedCategory.save();
+  category.title = title;
+
+  await category.save();
 
   const todos = await Todo.find({ "category._id": categoryId });
-
   todos.map(async (t) => {
-    t.category.title = updatedCategory.title;
+    t.category.title = category.title;
     await t.save();
   });
 
-  res.status(200).json(updatedCategory);
+  res.status(200).json(category);
 });
 
 exports.postAddCategory = asyncHandler(async (req, res) => {
