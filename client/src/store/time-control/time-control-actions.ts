@@ -77,79 +77,76 @@ export const removeTimeRange = (range: TimeRange) => {
   };
 };
 
-export const createDiagramObject = () => {
-  return async (dispatch: AppDispatch, getState: () => RootState) => {
-    const categories = getState().categories.items;
-    const timeRanges = getState().timeRanges.ranges;
+export const createDiagramObject = (
+  categories: Category[],
+  timeRanges: TimeRange[]
+) => {
+  const tableData: IReportDiagram[] = getDiagramData(categories, timeRanges);
 
-    const tableData: IReportDiagram[] = getDiagramData(categories, timeRanges);
-
-    const diagramObj = {
-      labels: tableData.map(({ categoryTitle: title }) => title),
-      datasets: [
-        {
-          data: tableData.map(
-            ({ percent: totalTimeInPercent }) => totalTimeInPercent
-          ),
-          backgroundColor: tableData.map(({ color }) => color),
-          hoverBackgroundColor: tableData.map(({ color }) => color),
-          borderWidth: 0,
-        },
-      ],
-    };
-
-    dispatch(timeRangesActions.createDiagramObject({ obj: { ...diagramObj } }));
+  const diagramObj = {
+    labels: tableData.map(({ categoryTitle: title }) => title),
+    datasets: [
+      {
+        data: tableData.map(
+          ({ percent: totalTimeInPercent }) => totalTimeInPercent
+        ),
+        backgroundColor: tableData.map(({ color }) => color),
+        hoverBackgroundColor: tableData.map(({ color }) => color),
+        borderWidth: 0,
+      },
+    ],
+  };
+  return {
+    ...diagramObj,
   };
 };
 
-export const createTableObject = () => {
-  return async (dispatch: AppDispatch, getState: () => RootState) => {
-    const categories = getState().categories.items;
-    const timeRanges = getState().timeRanges.ranges;
+export const createTableObject = (
+  categories: Category[],
+  timeRanges: TimeRange[]
+) => {
+  const data = getDiagramData(categories, timeRanges);
 
-    const data = getDiagramData(categories, timeRanges);
+  const tableData: ITable[] = data.map((item) => {
+    let updatedItem: ITable = {
+      ...item,
+      todos: [],
+    };
 
-    const tableData: ITable[] = data.map((item) => {
-      let updatedItem: ITable = {
-        ...item,
-        todos: [],
-      };
+    const todos = timeRanges
+      .filter((r) => r.category?.categoryId === item.categoryId)
+      .map((todo) => {
+        return {
+          todoTitle: todo.todo ? todo.todo.title : "No Title",
+          time: todo.time.ms,
+          percent: todo.time.percent,
+        };
+      });
 
-      const todos = timeRanges
-        .filter((r) => r.category?.categoryId === item.categoryId)
-        .map((todo) => {
-          return {
-            todoTitle: todo.todo ? todo.todo.title : "No Title",
-            time: todo.time.ms,
-            percent: todo.time.percent,
-          };
-        });
+    const todosWithoutCategory = timeRanges
+      .filter((r) => !r.category)
+      .map((todo) => {
+        return {
+          todoTitle: todo.todo ? todo.todo.title : "No Title",
+          time: todo.time.ms,
+          percent: todo.time.percent,
+        };
+      });
 
-      const todosWithoutCategory = timeRanges
-        .filter((r) => !r.category)
-        .map((todo) => {
-          return {
-            todoTitle: todo.todo ? todo.todo.title : "No Title",
-            time: todo.time.ms,
-            percent: todo.time.percent,
-          };
-        });
-
-      if (todos.length === 0) {
-        if (item.categoryTitle === "Unfilled time") {
-          updatedItem = { ...item, todos: [] };
-        } else if (item.categoryTitle === "Other") {
-          updatedItem = { ...item, todos: [...todosWithoutCategory] };
-        }
-      } else {
-        updatedItem = { ...item, todos: [...todos] };
+    if (todos.length === 0) {
+      if (item.categoryTitle === "Unfilled time") {
+        updatedItem = { ...item, todos: [] };
+      } else if (item.categoryTitle === "Other") {
+        updatedItem = { ...item, todos: [...todosWithoutCategory] };
       }
+    } else {
+      updatedItem = { ...item, todos: [...todos] };
+    }
 
-      return updatedItem;
-    });
+    return updatedItem;
+  });
 
-    dispatch(timeRangesActions.createTableObject(tableData));
-  };
+  return tableData;
 };
 
 const getDiagramData = (categories: Category[], timeRanges: TimeRange[]) => {

@@ -20,7 +20,6 @@ const Category: React.FC<
   const editTitleRef = useRef<HTMLInputElement>(null);
 
   const editCategoryHandle = () => {
-    console.log(category);
     setIsEdit(false);
     dispatch(
       editCategoryData({
