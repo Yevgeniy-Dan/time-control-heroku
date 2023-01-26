@@ -15,7 +15,7 @@ type InitialState = {
 const initialState: InitialState = {
   ranges: [],
   isReplaced: false,
-  tableData: {} as ITable[],
+  tableData: [] as ITable[],
   diagramObj: {} as IDoughnutDiagram,
   diagramIsLoaded: false,
 };

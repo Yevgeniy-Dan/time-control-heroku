@@ -6,6 +6,7 @@ import Category from "../../models/category";
 import TimeRange, { dayInMs } from "../../models/time-range";
 import { IReportDiagram } from "../../models/time/IDiagram";
 import { ITable } from "../../models/time/ITable";
+import { addTimeField, getTodayTimeRanges } from "./time-control-service";
 import { timeRangesActions } from "./time-control-slice";
 
 export const fetchTimeRanges = () => {
@@ -19,7 +20,9 @@ export const fetchTimeRanges = () => {
     };
 
     try {
-      const timeRangesData: TimeRange[] = await fetchData();
+      let timeRangesData: TimeRange[] = await fetchData();
+
+      timeRangesData = getTodayTimeRanges(timeRangesData);
 
       dispatch(timeRangesActions.replaceTimeRanges({ ranges: timeRangesData }));
     } catch (error) {
@@ -34,7 +37,10 @@ export const addTimeRange = (range: TimeRange) => {
       const addedItem = await api.post("/admin/add-time", {
         todo: qs.stringify(range.todo),
         category: qs.stringify(range.category),
-        time: qs.stringify(range.time),
+        dates: qs.stringify({
+          startDate: range.startDate,
+          endDate: range.endDate,
+        }),
       });
 
       return addedItem;
@@ -42,7 +48,11 @@ export const addTimeRange = (range: TimeRange) => {
 
     try {
       const newTime = await addTimeRequest();
-      dispatch(timeRangesActions.addTimeRange({ range: newTime.data }));
+      dispatch(
+        timeRangesActions.addTimeRange({
+          range: addTimeField(newTime.data),
+        })
+      );
     } catch (error) {
       console.log(error);
     }

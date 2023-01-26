@@ -77,7 +77,7 @@ exports.loginUser = asyncHandler(async (req, res) => {
     await saveToken(user._id, tokens.refreshToken);
 
     res.cookie("refreshToken", tokens.refreshToken, {
-      maxAge: 30 * 24 * 60 * 60 * 100,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
 
@@ -168,7 +168,7 @@ exports.refresh = asyncHandler(async (req, res) => {
     await saveToken(user._id, tokens.refreshToken);
 
     res.cookie("refreshToken", tokens.refreshToken, {
-      maxAge: 30 * 24 * 60 * 60 * 100,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
 

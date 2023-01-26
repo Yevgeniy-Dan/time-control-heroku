@@ -32,15 +32,13 @@ const timeRangeSchema = new Schema({
         required: true,
       },
     } | null,
-  time: {
-    ms: {
-      type: Number,
-      required: true,
-    },
-    percent: {
-      type: Number,
-      required: true,
-    },
+  startDate: {
+    type: Schema.Types.Date,
+    required: true,
+  },
+  endDate: {
+    type: Schema.Types.Date,
+    required: true,
   },
 });
 

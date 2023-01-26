@@ -125,15 +125,13 @@ exports.postAddTodo = asyncHandler(async (req, res) => {
 exports.postAddTimeRange = asyncHandler(async (req, res) => {
   const category = qs.parse(req.body.category);
   const todo = qs.parse(req.body.todo);
-  const time = qs.parse(req.body.time);
+  const dates = qs.parse(req.body.dates);
 
   const newTime = new TimeRanges({
     category: category,
     todo: todo,
-    time: {
-      ms: time.ms,
-      percent: time.percent,
-    },
+    startDate: dates.startDate,
+    endDate: dates.endDate,
     userId: req.user._id,
   });
 

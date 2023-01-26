@@ -1,9 +1,9 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./index.css";
 import "./index.scss";
+import "./config";
 import { Provider } from "react-redux";
 import App from "./App";
 import store from "./store";

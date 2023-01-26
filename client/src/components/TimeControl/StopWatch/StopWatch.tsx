@@ -13,11 +13,14 @@ import { TodoOption } from "../../../utils/select-input";
 import { TimeCategory } from "../../../types/Time";
 import { useAppDispatch } from "../../../hooks/redux";
 import TimeRangeList from "../TimeRangeList/TimeRangeList";
+import dayjs, { Dayjs } from "dayjs";
 
 const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(true);
-  const [time, setTime] = useState(120020);
+  const [time, setTime] = useState(33220020);
+
+  const [startDate, setStartDate] = useState({} as Dayjs);
 
   const [todo, setTodo] = useState<TodoOption | null>(null);
   const [category, setCategory] = useState<TimeCategory | null>(null);
@@ -42,6 +45,7 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   }, [isActive, isPaused]);
 
   const handleStart = () => {
+    setStartDate(dayjs());
     setIsActive(true);
     setIsPaused(false);
   };
@@ -51,7 +55,7 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
 
     if (!todo?.value) {
       timeRangeObj = new TimeRange(
-        time,
+        startDate,
         {
           title: todoTitle,
         },
@@ -59,7 +63,7 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
       );
     } else {
       timeRangeObj = new TimeRange(
-        time,
+        startDate,
         { title: todo!.label, todoId: todo!.value },
         category
       );

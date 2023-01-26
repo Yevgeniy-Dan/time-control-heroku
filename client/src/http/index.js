@@ -16,8 +16,6 @@ api.interceptors.request.use((config) => {
   config.headers["Content-Type"] = "application/x-www-form-urlencoded";
   config.headers["Authorization"] = `Bearer ${getState().auth.user.token}`;
 
-  console.log(config);
-
   return config;
 });
 
@@ -42,9 +40,10 @@ api.interceptors.response.use(
             user: response.data,
           })
         );
-        console.log(response.data);
+
         return api.request(originalRequest);
       } catch (error) {
+        console.log(error);
         localStorage.removeItem("user");
         dispatch(
           authActions.refresh({

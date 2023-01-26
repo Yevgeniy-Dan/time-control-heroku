@@ -1,13 +1,8 @@
 import React from "react";
-import BootstrapTable, {
-  ColumnDescription,
-  ExpandRowProps,
-} from "react-bootstrap-table-next";
+import BootstrapTable, { ExpandRowProps } from "react-bootstrap-table-next";
 import { ITable } from "../../models/time/ITable";
 import { TimeDisplay } from "../../types/Time";
 import { convertMs } from "../../utils/time-converter";
-
-import classes from "./AppTable.module.css";
 
 const formatTime = (time: TimeDisplay): string => {
   let formatted = "";
