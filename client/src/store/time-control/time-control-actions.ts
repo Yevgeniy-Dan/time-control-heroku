@@ -204,7 +204,6 @@ const createDiagramData = (
   timeRanges: TimeRange[],
   period: "day" | "week"
 ) => {
-  console.log(timeRanges);
   const data = categories.map((c) => {
     const totalCategoryTime = timeRanges
       .filter((tr) => tr.category?.categoryId === c._id)

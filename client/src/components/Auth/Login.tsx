@@ -5,6 +5,8 @@ import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { authActions, login } from "../../store/auth/auth-slice";
 import AppSpinner from "../UI/AppSpinner";
 
+import styles from "./Auth.module.css";
+
 const Login: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const [formData, setFormData] = useState({
     email: "",
@@ -55,15 +57,15 @@ const Login: React.FC<React.PropsWithChildren<{}>> = (props) => {
   }
 
   return (
-    <div className="container">
+    <div className={styles.container}>
       <section>
         <h1>Login</h1>
         <p>Login and start time controling</p>
       </section>
 
-      <section className="form">
+      <section className={styles.form}>
         <form onSubmit={onSubmit}>
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <input
               type="email"
               id="email"
@@ -73,7 +75,7 @@ const Login: React.FC<React.PropsWithChildren<{}>> = (props) => {
               onChange={onChange}
             />
           </div>
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <input
               type="password"
               id="password"
@@ -84,8 +86,8 @@ const Login: React.FC<React.PropsWithChildren<{}>> = (props) => {
             />
           </div>
 
-          <div className="form-group">
-            <button type="submit" className="btn btn-block">
+          <div className={styles.formGroup}>
+            <button type="submit" className={styles.btn}>
               Submit
             </button>
           </div>

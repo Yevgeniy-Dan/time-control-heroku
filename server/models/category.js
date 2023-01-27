@@ -41,7 +41,6 @@ categorySchema.methods.addTodoItem = function (todo) {
 };
 
 categorySchema.methods.removeTodoItem = function (todoId) {
-  console.log("removeTodo: ", todoId);
   const updatedTodoItems = this.todos.filter((todo) => {
     return todo.todoId.toString() !== todoId.toString();
   });

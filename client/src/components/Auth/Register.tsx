@@ -8,6 +8,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AppSpinner from "../UI/AppSpinner";
 
+import styles from "./Auth.module.css";
+
 const Register: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -64,15 +66,15 @@ const Register: React.FC<React.PropsWithChildren<{}>> = (props) => {
   }
 
   return (
-    <div className="container">
+    <div className={styles.container}>
       <section>
         <h1>Register</h1>
         <p>Please create an account</p>
       </section>
 
-      <section className="form">
+      <section className={styles.form}>
         <form onSubmit={onSubmit}>
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <input
               type="text"
               id="name"
@@ -82,7 +84,7 @@ const Register: React.FC<React.PropsWithChildren<{}>> = (props) => {
               onChange={onChange}
             />
           </div>
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <input
               type="email"
               id="email"
@@ -92,7 +94,7 @@ const Register: React.FC<React.PropsWithChildren<{}>> = (props) => {
               onChange={onChange}
             />
           </div>
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <input
               type="password"
               id="password"
@@ -102,7 +104,7 @@ const Register: React.FC<React.PropsWithChildren<{}>> = (props) => {
               onChange={onChange}
             />
           </div>
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <input
               type="password"
               id="password2"
@@ -113,8 +115,8 @@ const Register: React.FC<React.PropsWithChildren<{}>> = (props) => {
             />
           </div>
 
-          <div className="form-group">
-            <button type="submit" className="btn btn-block">
+          <div className={styles.formGroup}>
+            <button type="submit" className={styles.btn}>
               Submit
             </button>
           </div>
