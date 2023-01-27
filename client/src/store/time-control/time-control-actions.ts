@@ -1,12 +1,16 @@
 import qs from "qs";
 
-import { AppDispatch, RootState } from "..";
+import { AppDispatch } from "..";
 import api from "../../http";
 import Category from "../../models/category";
-import TimeRange, { dayInMs } from "../../models/time-range";
+import TimeRange, { dayInMs, weekInMs } from "../../models/time-range";
 import { IReportDiagram } from "../../models/time/IDiagram";
 import { ITable } from "../../models/time/ITable";
-import { addTimeField, getTodayTimeRanges } from "./time-control-service";
+import {
+  addTimeField,
+  getTodayTimeRanges,
+  getWeeklyReport,
+} from "./time-control-service";
 import { timeRangesActions } from "./time-control-slice";
 
 export const fetchTimeRanges = () => {
@@ -20,11 +24,17 @@ export const fetchTimeRanges = () => {
     };
 
     try {
-      let timeRangesData: TimeRange[] = await fetchData();
+      const timeRangesData: TimeRange[] = await fetchData();
 
-      timeRangesData = getTodayTimeRanges(timeRangesData);
+      const todayRanges = getTodayTimeRanges(timeRangesData);
+      const weekRanges = getWeeklyReport(timeRangesData);
 
-      dispatch(timeRangesActions.replaceTimeRanges({ ranges: timeRangesData }));
+      dispatch(
+        timeRangesActions.replaceTimeRanges({
+          todayRanges: todayRanges,
+          weekRanges: weekRanges,
+        })
+      );
     } catch (error) {
       console.log(error);
     }
@@ -79,9 +89,14 @@ export const removeTimeRange = (range: TimeRange) => {
 
 export const createDiagramObject = (
   categories: Category[],
-  timeRanges: TimeRange[]
+  timeRanges: TimeRange[],
+  period: "day" | "week"
 ) => {
-  const tableData: IReportDiagram[] = getDiagramData(categories, timeRanges);
+  const tableData: IReportDiagram[] = createDiagramData(
+    categories,
+    timeRanges,
+    period
+  );
 
   const diagramObj = {
     labels: tableData.map(({ categoryTitle: title }) => title),
@@ -101,55 +116,95 @@ export const createDiagramObject = (
   };
 };
 
-export const createTableObject = (
-  categories: Category[],
-  timeRanges: TimeRange[]
-) => {
-  const data = getDiagramData(categories, timeRanges);
-
-  const tableData: ITable[] = data.map((item) => {
-    let updatedItem: ITable = {
-      ...item,
-      todos: [],
+const parseInTodo = (array: TimeRange[]) => {
+  return array.map((todo) => {
+    return {
+      id: todo._id,
+      todoTitle: todo.todo ? todo.todo.title : "No Title",
+      time: todo.time.ms,
+      percent: todo.time.percent,
+      categoryId: todo.category?.categoryId,
     };
-
-    const todos = timeRanges
-      .filter((r) => r.category?.categoryId === item.categoryId)
-      .map((todo) => {
-        return {
-          todoTitle: todo.todo ? todo.todo.title : "No Title",
-          time: todo.time.ms,
-          percent: todo.time.percent,
-        };
-      });
-
-    const todosWithoutCategory = timeRanges
-      .filter((r) => !r.category)
-      .map((todo) => {
-        return {
-          todoTitle: todo.todo ? todo.todo.title : "No Title",
-          time: todo.time.ms,
-          percent: todo.time.percent,
-        };
-      });
-
-    if (todos.length === 0) {
-      if (item.categoryTitle === "Unfilled time") {
-        updatedItem = { ...item, todos: [] };
-      } else if (item.categoryTitle === "Other") {
-        updatedItem = { ...item, todos: [...todosWithoutCategory] };
-      }
-    } else {
-      updatedItem = { ...item, todos: [...todos] };
-    }
-
-    return updatedItem;
   });
-
-  return tableData;
 };
 
-const getDiagramData = (categories: Category[], timeRanges: TimeRange[]) => {
+export const createTableObject = (
+  categories: Category[],
+  timeRanges: TimeRange[],
+  period: "day" | "week"
+) => {
+  const data = createDiagramData(categories, timeRanges, period);
+
+  const timeRangesWithoutCategory = parseInTodo(
+    timeRanges.filter((r) => !r.category)
+  ).map((t) => {
+    const { categoryId, ...rest } = t;
+    return { ...rest };
+  });
+
+  const timeRangesWithDeletedCategory = parseInTodo(
+    timeRanges
+      .filter((t) => t.category && t.category.categoryId)
+      .filter((t) => {
+        return !data.some((d) => d.categoryId === t.category!.categoryId);
+      })
+  ).map((t) => {
+    const { categoryId, ...rest } = t;
+    return { ...rest };
+  });
+
+  const updatedData: ITable[] = data
+    .map((item) => {
+      let updatedItem: ITable = {
+        ...item,
+        todos: [],
+      };
+      if (item.categoryTitle === "Other") {
+        return {
+          ...item,
+          todos: [
+            ...timeRangesWithDeletedCategory,
+            ...timeRangesWithoutCategory,
+          ],
+        };
+      } else if (item.categoryTitle === "Unfilled time") {
+        return { ...item, todos: [] };
+      }
+
+      return updatedItem;
+    })
+    .filter((data) => data.todos?.length !== 0);
+
+  const tableData: ITable[] = data
+    .filter((item) => {
+      return !updatedData.some((ud) => ud?.categoryId === item.categoryId);
+    })
+    .map((item) => {
+      let updatedItem: ITable = {
+        ...item,
+        todos: [],
+      };
+
+      const todos = parseInTodo(
+        timeRanges.filter((r) => r.category?.categoryId === item.categoryId)
+      );
+
+      if (todos.length !== 0) {
+        updatedItem = { ...item, todos: [...todos] };
+      }
+
+      return updatedItem;
+    });
+
+  return [...tableData, ...updatedData];
+};
+
+const createDiagramData = (
+  categories: Category[],
+  timeRanges: TimeRange[],
+  period: "day" | "week"
+) => {
+  console.log(timeRanges);
   const data = categories.map((c) => {
     const totalCategoryTime = timeRanges
       .filter((tr) => tr.category?.categoryId === c._id)
@@ -200,7 +255,7 @@ const getDiagramData = (categories: Category[], timeRanges: TimeRange[]) => {
       categoryId: Math.floor(Math.random() * 100).toString(),
       categoryTitle: "Unfilled time",
       color: "#00000033",
-      time: dayInMs - totalTimeSum,
+      time: period === "day" ? dayInMs - totalTimeSum : weekInMs - totalTimeSum,
       percent: +(100 - totalPercentTimeSum).toFixed(2),
     });
   }

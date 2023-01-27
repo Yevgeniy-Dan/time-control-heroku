@@ -21,7 +21,7 @@ const TimeRangeList: React.FC = () => {
 
   return (
     <div className={classes.container}>
-      {timeRanges.ranges.map((t) => {
+      {timeRanges.todayRanges.map((t) => {
         return (
           <Row className={classes.cardContainer} key={t._id}>
             <Col xs="6">

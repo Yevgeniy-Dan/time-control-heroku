@@ -2,12 +2,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import TimeRange from "../../models/time-range";
 
 type InitialState = {
-  ranges: TimeRange[];
+  todayRanges: TimeRange[];
+  weekRanges: TimeRange[];
   isReplaced: boolean;
 };
 
 const initialState: InitialState = {
-  ranges: [],
+  todayRanges: [],
+  weekRanges: [],
   isReplaced: false,
 };
 
@@ -15,20 +17,27 @@ const timeRangesSlice = createSlice({
   name: "timeControls",
   initialState: initialState,
   reducers: {
-    replaceTimeRanges(state, action: PayloadAction<{ ranges: TimeRange[] }>) {
-      state.ranges = action.payload.ranges;
+    replaceTimeRanges(
+      state,
+      action: PayloadAction<{
+        todayRanges: TimeRange[];
+        weekRanges: TimeRange[];
+      }>
+    ) {
+      state.todayRanges = action.payload.todayRanges;
+      state.weekRanges = action.payload.weekRanges;
       state.isReplaced = true;
     },
 
     addTimeRange(state, action: PayloadAction<{ range: TimeRange }>) {
-      const updatedRanges = state.ranges;
+      const updatedRanges = state.todayRanges;
       updatedRanges.push(action.payload.range);
 
-      state.ranges = updatedRanges;
+      state.todayRanges = updatedRanges;
     },
     removeTimeRange(state, action: PayloadAction<{ item: TimeRange }>) {
       const id = action.payload.item._id;
-      state.ranges = state.ranges.filter((item) => item._id !== id);
+      state.todayRanges = state.todayRanges.filter((item) => item._id !== id);
     },
   },
 });

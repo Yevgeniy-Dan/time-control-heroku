@@ -163,11 +163,16 @@ exports.postDeleteCategory = asyncHandler(async (req, res) => {
   const removedCategory = await category.remove();
 
   const todos = await Todo.find({ "category.categoryId: ": categoryId });
-
-  todos.map((t) => {
-    t.category = null;
-    t.save();
+  const timeRanges = await TimeRanges.find({
+    "category.categoryId: ": categoryId,
   });
+
+  Promise.all(
+    todos.map(async (t) => {
+      t.category = null;
+      await t.save();
+    })
+  );
 
   res.status(200).json(removedCategory);
 });
