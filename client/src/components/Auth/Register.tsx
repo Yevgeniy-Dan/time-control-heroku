@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { authActions, register } from "../../store/auth/auth-slice";
-
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import { toast } from "react-toastify";
 import AppSpinner from "../UI/AppSpinner";
 
 import styles from "./Auth.module.css";
@@ -122,7 +121,6 @@ const Register: React.FC<React.PropsWithChildren<{}>> = (props) => {
           </div>
         </form>
       </section>
-      {/* <ToastContainer /> */}
     </div>
   );
 };
