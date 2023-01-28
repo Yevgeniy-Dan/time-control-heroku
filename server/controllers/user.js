@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/user");
 const Token = require("../models/token");
+const { accessSecret, refreshSecret } = require("../config/config");
 
 // @desc    Register new user
 // @route   POST /api/users
@@ -104,10 +105,10 @@ exports.logoutUser = asyncHandler(async (req, res) => {
 
 // Generate access and refresh tokens
 const generateTokens = (id) => {
-  const accessToken = jwt.sign({ id }, process.env.JWT_ACCESS_SECRET, {
+  const accessToken = jwt.sign({ id }, accessSecret, {
     expiresIn: "5m",
   });
-  const refreshToken = jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, {
+  const refreshToken = jwt.sign({ id }, refreshSecret, {
     expiresIn: "30d",
   });
 
@@ -148,7 +149,7 @@ exports.refresh = asyncHandler(async (req, res) => {
   }
 
   try {
-    userData = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    userData = jwt.verify(refreshToken, refreshSecret);
   } catch (error) {
     res.status(401);
     throw new Error("You haven't been in for a long time. Login again");
