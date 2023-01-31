@@ -36,8 +36,7 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    //check if user deleted or renamed category
-    if (categories.isReplaced && !categoryIsChecked && activeRangeIsSet) {
+    if (stopwatch.isActive && !categoryIsChecked && categories.isReplaced) {
       const updatedCategory = categories.items.find(
         (c) => c._id === category?.categoryId
       );
@@ -56,7 +55,8 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
       }
       setCategoryIsChecked(true);
     }
-  }, [categories, categoryIsChecked, activeRangeIsSet, dispatch]);
+    console.log(stopwatch.isActive);
+  }, [stopwatch, categoryIsChecked, categories]);
 
   useEffect(() => {
     if (activeRange && Object.keys(activeRange).length !== 0) {

@@ -94,31 +94,6 @@ export const addTimeRange = (range: TimeRange) => {
   };
 };
 
-// export const completeTimeRange = (range: TimeRange) => {
-//   return async (dispatch: AppDispatch, getState: RootState) => {
-//     const completeTimeRequest = async () => {
-//       const addedItem = await api.post("/admin/complete-time", {
-//         rangeId: getState.timeRanges.
-//         todo: qs.stringify(range.todo),
-//         category: qs.stringify(range.category),
-//         endDate: range.endDate,
-//       });
-
-//       return addedItem;
-//     };
-//     try {
-//       const newTime = await completeTimeRequest();
-//       dispatch(
-//         timeRangesActions.addTimeRange({
-//           range: addTimeField(newTime.data),
-//         })
-//       );
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-// };
-
 export const removeTimeRange = (range: TimeRange) => {
   return async (dispatch: AppDispatch) => {
     const sendRequest = async () => {

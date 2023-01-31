@@ -25,7 +25,11 @@ router.post("/delete-todo", protect, adminController.postDeleteTodo);
 
 router.get("/time-ranges", protect, adminController.getTimeRanges);
 
-router.post("/add-active-time", protect, adminController.postActiveTimeRange);
+router.post(
+  "/add-active-time",
+  protect,
+  adminController.postAddActiveTimeRange
+);
 router.post("/add-time-range", protect, adminController.postAddTimeRange);
 router.post("/edit-active-time", protect, adminController.postEditTimeRange);
 

@@ -126,7 +126,7 @@ exports.postAddTodo = asyncHandler(async (req, res) => {
   });
 });
 
-exports.postActiveTimeRange = asyncHandler(async (req, res) => {
+exports.postAddActiveTimeRange = asyncHandler(async (req, res) => {
   const category = qs.parse(req.body.category);
   const todo = qs.parse(req.body.todo);
   const startDate = req.body.startDate;
@@ -150,7 +150,17 @@ exports.postAddTimeRange = asyncHandler(async (req, res) => {
   const category = qs.parse(req.body.category);
   const todo = qs.parse(req.body.todo);
 
+  if (!req.user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
   const range = await TimeRanges.findById(rangeId);
+
+  if (range.userId.toString() !== req.user._id.toString()) {
+    res.status(401);
+    throw new Error("User not authorized");
+  }
 
   range.isActive = false;
   range.category = category;
@@ -167,7 +177,17 @@ exports.postEditTimeRange = asyncHandler(async (req, res) => {
   const category = qs.parse(req.body.category);
   const todo = qs.parse(req.body.todo);
 
+  if (!req.user) {
+    res.status(401);
+    throw new Error("User not found");
+  }
+
   const range = await TimeRanges.findById(rangeId);
+
+  if (range.userId.toString() !== req.user._id.toString()) {
+    res.status(401);
+    throw new Error("User not authorized");
+  }
 
   range.category = category;
   range.todo = todo;
