@@ -28,46 +28,52 @@ const Report: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const [weekTableData, setWeekTableData] = useState([] as ITable[]);
 
   useEffect(() => {
-    if (
-      timeRanges.isReplaced &&
-      categories.isReplaced &&
-      Object.keys(todayDiagramObj).length === 0 // if diagramObj is empty
-    ) {
-      const todayDiagram = createDiagramObject(
-        categories.items,
-        timeRanges.todayRanges,
-        "day"
-      );
-      const weekDiagram = createDiagramObject(
-        categories.items,
-        timeRanges.weekRanges,
-        "week"
-      );
-      setTodayDiagramObj(todayDiagram);
-      setWeekDiagramObj(weekDiagram);
+    if (timeRanges.isReplaced && categories.isReplaced) {
+      if (
+        Object.keys(todayDiagramObj).length === 0 // if diagramObj is empty
+      ) {
+        const todayDiagram = createDiagramObject(
+          categories.items,
+          timeRanges.todayRanges,
+          "day"
+        );
+        setTodayDiagramObj(todayDiagram);
+      }
+
+      if (
+        Object.keys(weekDiagramObj).length === 0 // if diagramObj is empty
+      ) {
+        const weekDiagram = createDiagramObject(
+          categories.items,
+          timeRanges.weekRanges,
+          "week"
+        );
+        setWeekDiagramObj(weekDiagram);
+      }
     }
-  }, [timeRanges, categories, todayDiagramObj]);
+  }, [timeRanges, categories, todayDiagramObj, weekDiagramObj]);
 
   useEffect(() => {
-    if (
-      timeRanges.isReplaced &&
-      categories.isReplaced &&
-      todayTableData.length === 0
-    ) {
-      const todayTableData = createTableObject(
-        categories.items,
-        timeRanges.todayRanges,
-        "day"
-      );
-      const weekTableData = createTableObject(
-        categories.items,
-        timeRanges.weekRanges,
-        "week"
-      );
-      setTodayTableData(todayTableData);
-      setWeekTableData(weekTableData);
+    if (timeRanges.isReplaced && categories.isReplaced) {
+      if (weekTableData.length === 0) {
+        const weekTableData = createTableObject(
+          categories.items,
+          timeRanges.weekRanges,
+          "week"
+        );
+        setWeekTableData(weekTableData);
+      }
+
+      if (todayTableData.length === 0) {
+        const todayTableData = createTableObject(
+          categories.items,
+          timeRanges.todayRanges,
+          "day"
+        );
+        setTodayTableData(todayTableData);
+      }
     }
-  }, [timeRanges, categories, todayTableData]);
+  }, [timeRanges, categories, todayTableData, weekTableData]);
 
   return (
     <Container>

@@ -6,9 +6,6 @@ import classes from "./AppBadge.module.css";
 const AppBadge: React.FC<
   React.PropsWithChildren<{ onClick: () => void; title: string }>
 > = ({ onClick, title }) => {
-  useEffect(() => {
-    console.log(title);
-  }, [title]);
   return (
     <div
       className={`d-flex align-items-center justify-content-center ${classes.categoryBadgeContainer}`}
