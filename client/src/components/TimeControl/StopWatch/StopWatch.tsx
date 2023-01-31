@@ -18,11 +18,7 @@ import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import TimeRangeList from "../TimeRangeList/TimeRangeList";
 import dayjs from "dayjs";
 import { stopwatchActions } from "../../../store/stopwatch/stopwatch-slice";
-import {
-  editActiveTimeRange,
-  timeRangesActions,
-} from "../../../store/time-control/time-control-slice";
-import { v4 as uuidv4, v4 } from "uuid";
+import { editActiveTimeRange } from "../../../store/time-control/time-control-slice";
 
 const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const stopwatch = useAppSelector((state) => state.stopwatch);
