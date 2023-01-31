@@ -36,7 +36,12 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (stopwatch.isActive && !categoryIsChecked && categories.isReplaced) {
+    if (
+      stopwatch.isActive &&
+      !categoryIsChecked &&
+      categories.isReplaced &&
+      activeRangeIsSet
+    ) {
       const updatedCategory = categories.items.find(
         (c) => c._id === category?.categoryId
       );
@@ -55,8 +60,7 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
       }
       setCategoryIsChecked(true);
     }
-    console.log(stopwatch.isActive);
-  }, [stopwatch, categoryIsChecked, categories]);
+  }, [stopwatch, categoryIsChecked, categories, activeRangeIsSet]);
 
   useEffect(() => {
     if (activeRange && Object.keys(activeRange).length !== 0) {
@@ -74,7 +78,7 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
           categoryId: activeRange.category?.categoryId || null,
         });
       } else {
-        setUserTodoInput(activeRange.todo!.title);
+        setUserTodoInput(activeRange.todo?.title || "");
       }
 
       if (!activeRangeIsSet) {

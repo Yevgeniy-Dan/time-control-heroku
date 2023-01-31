@@ -57,8 +57,12 @@ const timeRangesSlice = createSlice({
       state.activeRange = action.payload;
     },
     addTimeRange(state, action: PayloadAction<{ range: TimeRange }>) {
-      const updatedTodayRanges = state.todayRanges;
-      const updatedWeekRanges = state.todayRanges;
+      const updatedTodayRanges = state.todayRanges.filter(
+        (r) => action.payload.range._id !== r._id
+      );
+      const updatedWeekRanges = state.weekRanges.filter(
+        (r) => action.payload.range._id !== r._id
+      );
 
       updatedTodayRanges.push(action.payload.range);
       updatedWeekRanges.push(action.payload.range);
