@@ -15,6 +15,7 @@ const categoriesSlice = createSlice({
   name: "categories",
   initialState: initialState,
   reducers: {
+    reset: () => initialState,
     replaceCategories(
       state,
       action: PayloadAction<{ items: CategoryModel[] }>
@@ -36,11 +37,12 @@ const categoriesSlice = createSlice({
       });
     },
     editCategory(state, action: PayloadAction<{ item: CategoryModel }>) {
-      const editItem = state.items.filter(
-        (c) => c._id === action.payload.item._id
-      )[0];
-
-      editItem.title = action.payload.item.title;
+      state.items = state.items.map((c) => {
+        if (c._id === action.payload.item._id) {
+          return { ...action.payload.item };
+        }
+        return { ...c };
+      });
     },
     removeCategoryFromCategories(
       state,

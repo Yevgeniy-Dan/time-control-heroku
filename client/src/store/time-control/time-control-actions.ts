@@ -26,6 +26,10 @@ export const fetchTimeRanges = () => {
     try {
       const timeRangesData: TimeRange[] = await fetchData();
 
+      const activeTimeRange = timeRangesData.filter((t) => {
+        return t.isActive;
+      })[0];
+
       const todayRanges = getTodayTimeRanges(timeRangesData);
       const weekRanges = getWeeklyReport(timeRangesData);
 
@@ -33,8 +37,30 @@ export const fetchTimeRanges = () => {
         timeRangesActions.replaceTimeRanges({
           todayRanges: todayRanges,
           weekRanges: weekRanges,
+          activeRange: activeTimeRange,
         })
       );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const addActiveTimeRange = (range: TimeRange) => {
+  return async (dispatch: AppDispatch) => {
+    const addTimeRequest = async () => {
+      const addedItem = await api.post("/admin/add-active-time", {
+        todo: qs.stringify(range.todo),
+        category: qs.stringify(range.category),
+        startDate: range.startDate,
+      });
+
+      return addedItem;
+    };
+
+    try {
+      const newTime = await addTimeRequest();
+      dispatch(timeRangesActions.replaceActiveRange(newTime.data));
     } catch (error) {
       console.log(error);
     }
@@ -44,13 +70,11 @@ export const fetchTimeRanges = () => {
 export const addTimeRange = (range: TimeRange) => {
   return async (dispatch: AppDispatch) => {
     const addTimeRequest = async () => {
-      const addedItem = await api.post("/admin/add-time", {
+      const addedItem = await api.post("/admin/add-time-range", {
+        rangeId: range._id,
         todo: qs.stringify(range.todo),
         category: qs.stringify(range.category),
-        dates: qs.stringify({
-          startDate: range.startDate,
-          endDate: range.endDate,
-        }),
+        endDate: range.endDate,
       });
 
       return addedItem;
@@ -58,6 +82,7 @@ export const addTimeRange = (range: TimeRange) => {
 
     try {
       const newTime = await addTimeRequest();
+
       dispatch(
         timeRangesActions.addTimeRange({
           range: addTimeField(newTime.data),
@@ -68,6 +93,31 @@ export const addTimeRange = (range: TimeRange) => {
     }
   };
 };
+
+// export const completeTimeRange = (range: TimeRange) => {
+//   return async (dispatch: AppDispatch, getState: RootState) => {
+//     const completeTimeRequest = async () => {
+//       const addedItem = await api.post("/admin/complete-time", {
+//         rangeId: getState.timeRanges.
+//         todo: qs.stringify(range.todo),
+//         category: qs.stringify(range.category),
+//         endDate: range.endDate,
+//       });
+
+//       return addedItem;
+//     };
+//     try {
+//       const newTime = await completeTimeRequest();
+//       dispatch(
+//         timeRangesActions.addTimeRange({
+//           range: addTimeField(newTime.data),
+//         })
+//       );
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+// };
 
 export const removeTimeRange = (range: TimeRange) => {
   return async (dispatch: AppDispatch) => {

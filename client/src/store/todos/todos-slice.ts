@@ -6,13 +6,16 @@ type InitialState = {
 };
 
 const initialState: InitialState = {
-  items: [],
+  items: [] as TodoModel[],
 };
 
 const todosSlice = createSlice({
   name: "todos",
   initialState: initialState,
   reducers: {
+    reset: () => {
+      return { ...initialState };
+    },
     replaceTodos(state, action: PayloadAction<{ items: TodoModel[] }>) {
       state.items = action.payload.items;
     },

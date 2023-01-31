@@ -1,5 +1,23 @@
 import TimeRange, { dayInMs, weekInMs } from "../../models/time-range";
 import dayjs from "dayjs";
+import api from "../../http";
+import qs from "qs";
+
+const editTimeRange = async (range: TimeRange) => {
+  const editedItem = await api.post("/admin/edit-active-time", {
+    rangeId: range._id,
+    todo: qs.stringify(range.todo),
+    category: qs.stringify(range.category),
+  });
+
+  return editedItem.data;
+};
+
+const timeRangeService = {
+  editTimeRange,
+};
+
+export default timeRangeService;
 
 export const addTimeField = (timeRange: TimeRange) => {
   const ms = dayjs(timeRange.endDate)

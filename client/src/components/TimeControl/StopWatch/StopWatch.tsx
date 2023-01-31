@@ -5,68 +5,147 @@ import classes from "./StopWatch.module.css";
 
 import AppBadge from "../../UI/AppBadge";
 import AppSelectInput from "../../UI/AppSelectInput";
-import { addTimeRange } from "../../../store/time-control/time-control-actions";
+import {
+  addActiveTimeRange,
+  addTimeRange,
+} from "../../../store/time-control/time-control-actions";
 import ControlButtons from "../ControlButtons/ControlButtons";
 import Timer from "../Timer/Timer";
 import TimeRange from "../../../models/time-range";
 import { TodoOption } from "../../../utils/select-input";
 import { TimeCategory } from "../../../types/Time";
-import { useAppDispatch } from "../../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
 import TimeRangeList from "../TimeRangeList/TimeRangeList";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import { stopwatchActions } from "../../../store/stopwatch/stopwatch-slice";
+import {
+  editActiveTimeRange,
+  timeRangesActions,
+} from "../../../store/time-control/time-control-slice";
+import { v4 as uuidv4, v4 } from "uuid";
 
 const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
-  const [isActive, setIsActive] = useState(false);
-  const [isPaused, setIsPaused] = useState(true);
-  const [time, setTime] = useState(33220020);
+  const stopwatch = useAppSelector((state) => state.stopwatch);
+  const categories = useAppSelector((state) => state.categories);
 
-  const [startDate, setStartDate] = useState({} as Dayjs);
+  const activeRange = useAppSelector((state) => state.timeRanges.activeRange);
+
+  const [activeRangeIsSet, setActiveRangeIsSet] = useState(false);
 
   const [todo, setTodo] = useState<TodoOption | null>(null);
   const [category, setCategory] = useState<TimeCategory | null>(null);
+  const [categoryIsChecked, setCategoryIsChecked] = useState(false);
 
+  const [todoTitle, setTodoTitle] = useState<string | null>(null);
   const dispatch = useAppDispatch();
 
-  const [todoTitle, setTodoTitle] = useState<string>("");
+  useEffect(() => {
+    //check if user deleted or renamed category
+    if (categories.isReplaced && !categoryIsChecked && activeRangeIsSet) {
+      const updatedCategory = categories.items.find(
+        (c) => c._id === category?.categoryId
+      );
+      if (updatedCategory) {
+        const newCategory = {
+          categoryId: updatedCategory._id,
+          title: updatedCategory.title,
+        };
+        setCategory(newCategory);
+        dispatch(
+          editActiveTimeRange({
+            ...activeRange,
+            category: newCategory,
+          })
+        );
+      }
+      setCategoryIsChecked(true);
+    }
+  }, [categories, categoryIsChecked, activeRangeIsSet, dispatch]);
 
   useEffect(() => {
-    let interval: any = null;
+    if (activeRange && Object.keys(activeRange).length !== 0) {
+      if (activeRange.category) {
+        setCategory({
+          categoryId: activeRange.category.categoryId,
+          title: activeRange.category.title,
+        });
+      }
+      if (activeRange?.todo?.todoId) {
+        setTodo({
+          value: activeRange.todo.todoId,
+          label: activeRange?.todo?.title.toUpperCase(),
+          categoryTitle: activeRange.category?.title || null,
+          categoryId: activeRange.category?.categoryId || null,
+        });
+      } else {
+        setUserTodoInput(activeRange.todo!.title);
+      }
 
-    if (isActive && isPaused === false) {
-      interval = setInterval(() => {
-        setTime((time) => time + 10);
-      }, 10);
-    } else {
-      clearInterval(interval);
+      if (!activeRangeIsSet) {
+        handleStart(false, activeRange.startDate);
+        setActiveRangeIsSet(true);
+      }
     }
-    return () => {
-      clearInterval(interval);
-    };
-  }, [isActive, isPaused]);
+  }, [activeRange, activeRangeIsSet]);
 
-  const handleStart = () => {
-    setStartDate(dayjs());
-    setIsActive(true);
-    setIsPaused(false);
+  const handleStart = async (
+    userClick: boolean = false,
+    startDate: string = new Date().toISOString()
+  ) => {
+    const time = dayjs().diff(dayjs(startDate).toDate());
+
+    dispatch(
+      stopwatchActions.run({
+        startDate: startDate,
+        time: time,
+      })
+    );
+
+    if (userClick) {
+      let timeRangeObj;
+      if (!todo?.value) {
+        timeRangeObj = new TimeRange(
+          {
+            title: todoTitle || "",
+          },
+          null,
+          startDate
+        );
+      } else {
+        timeRangeObj = new TimeRange(
+          { title: todo!.label, todoId: todo!.value },
+          category,
+          startDate
+        );
+      }
+      dispatch(addActiveTimeRange(timeRangeObj));
+    }
   };
 
   const handleReset = () => {
-    let timeRangeObj;
+    let timeRangeObj = {
+      ...activeRange,
+    };
 
     if (!todo?.value) {
-      timeRangeObj = new TimeRange(
-        startDate,
-        {
-          title: todoTitle,
+      timeRangeObj = {
+        ...activeRange,
+        endDate: dayjs().toISOString(),
+        category: null,
+        todo: {
+          title: todoTitle || "",
         },
-        null
-      );
+      };
     } else {
-      timeRangeObj = new TimeRange(
-        startDate,
-        { title: todo!.label, todoId: todo!.value },
-        category
-      );
+      timeRangeObj = {
+        ...activeRange,
+        endDate: dayjs().toISOString(),
+        category: category,
+        todo: {
+          todoId: todo.value,
+          title: todo.label,
+        },
+      };
     }
 
     dispatch(addTimeRange(timeRangeObj));
@@ -75,10 +154,15 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
   };
 
   const clearValues = () => {
-    setIsActive(false);
-    setTime(0);
+    dispatch(stopwatchActions.clear());
     setTodo(null);
     setCategory(null);
+  };
+
+  const setUserTodoInput = (todoTitle: string) => {
+    setTodo(null);
+    setCategory(null);
+    setTodoTitle(todoTitle);
   };
 
   return (
@@ -93,13 +177,37 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
                 setTodo(todo);
                 setCategory(category);
               }
+
+              if (stopwatch.isActive) {
+                dispatch(
+                  editActiveTimeRange({
+                    ...activeRange,
+                    category: category,
+                    todo: {
+                      title: todo!.label,
+                      todoId: todo!.value,
+                    },
+                  })
+                );
+              }
             }}
             onUserManualInput={(title: string) => {
-              setTodo(null);
-              setCategory(null);
-              setTodoTitle(title);
+              setUserTodoInput(title);
+
+              if (stopwatch.isActive) {
+                dispatch(
+                  editActiveTimeRange({
+                    ...activeRange,
+                    category: null,
+                    todo: {
+                      title: title,
+                    },
+                  })
+                );
+              }
             }}
             todo={todo}
+            todoTitle={todoTitle}
           />
         </Col>
         <Col style={{ position: "relative" }}>
@@ -109,12 +217,12 @@ const StopWatch: React.FC<React.PropsWithChildren<{}>> = (props) => {
           />
         </Col>
         <Col>
-          <Timer time={time} />
+          <Timer time={stopwatch.time} />
         </Col>
         <Col>
           <ControlButtons
-            active={isActive}
-            handleStart={handleStart}
+            active={stopwatch.isActive}
+            handleStart={() => handleStart(true)}
             handleReset={handleReset}
           />
         </Col>

@@ -11,10 +11,14 @@ import store from "./store";
 import { BrowserRouter } from "react-router-dom";
 import { Route, Routes } from "react-router";
 import { ToastContainer } from "react-toastify";
+import { injectStore } from "./http";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
+injectStore(store);
+
 root.render(
   <Provider store={store}>
     <BrowserRouter>

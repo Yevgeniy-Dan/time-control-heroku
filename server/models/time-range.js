@@ -8,6 +8,10 @@ const timeRangeSchema = new Schema({
     ref: "User",
     required: true,
   },
+  isActive: {
+    type: Boolean,
+    required: true,
+  },
   todo:
     {
       todoId: {
@@ -34,11 +38,11 @@ const timeRangeSchema = new Schema({
     } | null,
   startDate: {
     type: Schema.Types.Date,
-    required: true,
+    required: false,
   },
   endDate: {
     type: Schema.Types.Date,
-    required: true,
+    required: false,
   },
 });
 

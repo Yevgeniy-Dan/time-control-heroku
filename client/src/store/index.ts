@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./auth/auth-slice";
 import categoriesSlice from "./categories/categories-slice";
+import stopwatchSlice from "./stopwatch/stopwatch-slice";
 import timeRangesSlice from "./time-control/time-control-slice";
 import todosSlice from "./todos/todos-slice";
 
@@ -10,6 +11,7 @@ const store = configureStore({
     categories: categoriesSlice.reducer,
     todos: todosSlice.reducer,
     timeRanges: timeRangesSlice.reducer,
+    stopwatch: stopwatchSlice.reducer,
   },
 });
 

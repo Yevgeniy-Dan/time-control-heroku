@@ -1,4 +1,3 @@
-import dayjs, { Dayjs } from "dayjs";
 import { Time, TimeCategory, TimeTodo } from "../types/Time";
 
 export const dayInMs = 86400000;
@@ -10,16 +9,16 @@ class TimeRange {
   category?: TimeCategory | null;
   time: Time;
   startDate: string;
-  endDate: string;
+  endDate: string | null;
+  isActive: boolean;
 
   constructor(
-    startDate: Dayjs,
     todo: TimeTodo | null,
-    category: TimeCategory | null
+    category: TimeCategory | null,
+    startDate: string
   ) {
     this._id = new Date().toISOString();
-    this.startDate = startDate.toISOString();
-    this.endDate = dayjs().toISOString();
+    this.startDate = startDate;
     this.todo = todo ? { ...todo } : null;
     this.category = category ? { ...category } : null;
   }

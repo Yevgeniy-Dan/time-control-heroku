@@ -1,6 +1,7 @@
 import { AppDispatch } from "..";
 import api from "../../http";
 import TodoModel from "../../models/todo";
+import { categoriesActions } from "../categories/categories-slice";
 import { todosActions } from "./todos-slice";
 
 export const fetchTodosData = () => {
@@ -29,15 +30,18 @@ export const fetchTodosData = () => {
 export const addTodoData = (todo: TodoModel) => {
   return async (dispatch: AppDispatch) => {
     const sendRequest = async () => {
-      const addedItem = await api.post("/admin/add-todo", {
+      const response = await api.post("/admin/add-todo", {
         title: todo.title,
         categoryId: todo.category?._id,
       });
-      return addedItem.data;
+      return response.data;
     };
     try {
-      const newItem = await sendRequest();
-      dispatch(todosActions.addTodo({ item: newItem }));
+      const response = await sendRequest();
+      dispatch(todosActions.addTodo({ item: response.todo }));
+      if (response.category) {
+        dispatch(categoriesActions.editCategory({ item: response.category }));
+      }
     } catch (error) {
       console.log(error);
     }
@@ -54,8 +58,11 @@ export const removeTodoData = (todo: TodoModel) => {
       return response.data;
     };
     try {
-      const removedItem = await sendRequest();
-      dispatch(todosActions.removeTodo({ item: removedItem }));
+      const response = await sendRequest();
+      dispatch(todosActions.removeTodo({ item: response.todo }));
+      if (response.category) {
+        dispatch(categoriesActions.editCategory({ item: response.category }));
+      }
     } catch (error) {
       console.log(error);
     }

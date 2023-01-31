@@ -80,6 +80,7 @@ exports.postAddCategory = asyncHandler(async (req, res) => {
 exports.postAddTodo = asyncHandler(async (req, res) => {
   const { title } = req.body;
   let { categoryId } = req.body;
+  let updatedCategory;
 
   let todo = new Todo({
     title: title,
@@ -112,32 +113,68 @@ exports.postAddTodo = asyncHandler(async (req, res) => {
         _id: category._id,
       };
 
-      await category.addTodoItem(todo);
+      updatedCategory = await category.addTodoItem(todo);
     }
   }
 
   const addedTodo = await todo.save();
 
   // req.user.addToTodoCart(todo);
-  res.status(200).json(addedTodo);
+  res.status(200).json({
+    todo: addedTodo,
+    category: updatedCategory,
+  });
 });
 
-exports.postAddTimeRange = asyncHandler(async (req, res) => {
+exports.postActiveTimeRange = asyncHandler(async (req, res) => {
   const category = qs.parse(req.body.category);
   const todo = qs.parse(req.body.todo);
-  const dates = qs.parse(req.body.dates);
+  const startDate = req.body.startDate;
 
   const newTime = new TimeRanges({
     category: category,
     todo: todo,
-    startDate: dates.startDate,
-    endDate: dates.endDate,
+    startDate: startDate,
+    isActive: true,
+    endDate: null,
     userId: req.user._id,
   });
 
-  await newTime.save();
+  const addedTime = await newTime.save();
 
-  res.status(200).json(newTime);
+  res.status(200).json(addedTime);
+});
+
+exports.postAddTimeRange = asyncHandler(async (req, res) => {
+  const { rangeId, endDate } = req.body;
+  const category = qs.parse(req.body.category);
+  const todo = qs.parse(req.body.todo);
+
+  const range = await TimeRanges.findById(rangeId);
+
+  range.isActive = false;
+  range.category = category;
+  range.todo = todo;
+  range.endDate = endDate;
+
+  const addedRange = await range.save();
+
+  res.status(200).json(addedRange);
+});
+
+exports.postEditTimeRange = asyncHandler(async (req, res) => {
+  const { rangeId } = req.body;
+  const category = qs.parse(req.body.category);
+  const todo = qs.parse(req.body.todo);
+
+  const range = await TimeRanges.findById(rangeId);
+
+  range.category = category;
+  range.todo = todo;
+
+  const editedRange = await range.save();
+
+  res.status(200).json(editedRange);
 });
 
 exports.postDeleteCategory = asyncHandler(async (req, res) => {
@@ -163,11 +200,7 @@ exports.postDeleteCategory = asyncHandler(async (req, res) => {
   const removedCategory = await category.remove();
 
   const todos = await Todo.find({ "category.categoryId: ": categoryId });
-  const timeRanges = await TimeRanges.find({
-    "category.categoryId: ": categoryId,
-  });
-
-  Promise.all(
+  await Promise.all(
     todos.map(async (t) => {
       t.category = null;
       await t.save();
@@ -179,6 +212,7 @@ exports.postDeleteCategory = asyncHandler(async (req, res) => {
 
 exports.postDeleteTodo = asyncHandler(async (req, res) => {
   const { todoId, categoryId } = req.body;
+  let updatedCategory;
 
   if (!req.user) {
     res.status(400);
@@ -203,10 +237,13 @@ exports.postDeleteTodo = asyncHandler(async (req, res) => {
       return c.todoId.toString() !== todoId.toString();
     });
     category.todos = updatedTodos;
-    await category.save();
+    updatedCategory = await category.save();
   }
 
-  res.status(200).json(removedTodo);
+  res.status(200).json({
+    todo: removedTodo,
+    category: updatedCategory,
+  });
 });
 
 exports.postDeleteTimeRange = asyncHandler(async (req, res) => {

@@ -3,6 +3,10 @@ import api from "../../http";
 import { AuthResponse } from "../../models/response/AuthResponse";
 import { RefreshResponse } from "../../models/response/RefreshResponse";
 import { User } from "../../types/User";
+import { categoriesActions } from "../categories/categories-slice";
+import { stopwatchActions } from "../stopwatch/stopwatch-slice";
+import { timeRangesActions } from "../time-control/time-control-slice";
+import { todosActions } from "../todos/todos-slice";
 import authService from "./auth-service";
 
 // Get user from localStorage
@@ -58,7 +62,14 @@ export const login = createAsyncThunk(
 
 export const logout = createAsyncThunk("/auth/logout", async (_, thunkAPI) => {
   try {
-    return await authService.logout();
+    const response = await authService.logout();
+
+    thunkAPI.dispatch(categoriesActions.reset());
+    thunkAPI.dispatch(timeRangesActions.reset());
+    thunkAPI.dispatch(todosActions.reset());
+    thunkAPI.dispatch(stopwatchActions.reset());
+
+    return response;
   } catch (error: any) {
     const message =
       (error.response &&

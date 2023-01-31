@@ -1,7 +1,11 @@
-import React, { useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useAppSelector } from "../../hooks/redux";
 import useOutsideClick from "../../hooks/useOutsideClick";
-import { groupedOptions, TodoOption } from "../../utils/select-input";
+import {
+  GroupedOption,
+  groupedOptions,
+  TodoOption,
+} from "../../utils/select-input";
 
 import classes from "./AppGroupedSelectInput.module.css";
 const AppGroupedSelectInput: React.FC<
@@ -17,10 +21,16 @@ const AppGroupedSelectInput: React.FC<
 
   const categories = useAppSelector((state) => state.categories.items);
   const todos = useAppSelector((state) => state.todos.items);
+  const [options, setOptions] = useState<GroupedOption[]>(
+    [] as GroupedOption[]
+  );
 
   useOutsideClick(wrapperRef, onClose);
 
-  const options = groupedOptions(categories, todos);
+  useEffect(() => {
+    setOptions(groupedOptions(categories, todos));
+  }, [categories, todos]);
+
   if (show) {
     return (
       <div ref={wrapperRef} className={classes.box}>

@@ -1,20 +1,25 @@
 import axios from "axios";
 
 import authApi from "./authApi";
-import store from "../store";
 import { API_URL } from "../store/auth/auth-service";
 import { authActions } from "../store/auth/auth-slice";
+
+let store;
+
+export const injectStore = (_store) => {
+  store = _store;
+};
 
 const api = axios.create({
   withCredentials: true,
   proxy: true,
 });
 
-const { dispatch, getState } = store;
-
 api.interceptors.request.use((config) => {
   config.headers["Content-Type"] = "application/x-www-form-urlencoded";
-  config.headers["Authorization"] = `Bearer ${getState().auth.user.token}`;
+  config.headers["Authorization"] = `Bearer ${
+    store.getState().auth.user.token
+  }`;
 
   return config;
 });
@@ -35,7 +40,7 @@ api.interceptors.response.use(
         const response = await authApi.get(API_URL + "refresh");
 
         localStorage.setItem("user", JSON.stringify(response.data));
-        dispatch(
+        store.dispatch(
           authActions.refresh({
             user: response.data,
           })
@@ -45,7 +50,7 @@ api.interceptors.response.use(
       } catch (error) {
         console.log(error);
         localStorage.removeItem("user");
-        dispatch(
+        store.dispatch(
           authActions.refresh({
             user: null,
             isError: true,
@@ -58,7 +63,7 @@ api.interceptors.response.use(
           })
         );
 
-        dispatch(authActions.reset());
+        store.dispatch(authActions.reset());
       }
     }
     throw error;

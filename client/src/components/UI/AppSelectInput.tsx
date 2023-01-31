@@ -10,10 +10,11 @@ import classes from "./AppSelectInput.module.css";
 const AppSelectInput: React.FC<
   React.PropsWithChildren<{
     todo: TodoOption | null;
+    todoTitle: string | null;
     onUserManualInput: (todoTitle: string) => void;
     onSelect: (todo: TodoOption | null, category: TimeCategory | null) => void;
   }>
-> = ({ onSelect, todo, onUserManualInput }) => {
+> = ({ onSelect, todo, todoTitle, onUserManualInput }) => {
   const staticInputRef = useRef<HTMLInputElement>(null);
   const editableInputRef = useRef<HTMLInputElement>(null);
 
@@ -27,8 +28,12 @@ const AppSelectInput: React.FC<
     if (isManualInputEnabled) {
       editableInputRef!.current!.focus();
     }
-  }, [isManualInputEnabled]);
-
+  }, [isManualInputEnabled, todo, todoTitle]);
+  useEffect(() => {
+    if (!todo && todoTitle) {
+      setIsManualInputEnabled(true);
+    }
+  }, [todo, todoTitle]);
   return (
     <InputGroup className={classes.inputGroup}>
       <input
@@ -37,6 +42,7 @@ const AppSelectInput: React.FC<
         className="w-100"
         required
         type="text"
+        defaultValue={todo ? todo.label : ""}
         onClick={(e) => {
           setFilterValue(e.currentTarget.value);
           editableInputRef!.current!.value = e.currentTarget.value;
@@ -44,6 +50,7 @@ const AppSelectInput: React.FC<
           setIsManualInputEnabled(true);
           setShow(!show);
         }}
+        onMouseDown={(e) => {}}
         style={{
           display: isManualInputEnabled ? "none" : "inline-block",
         }}
@@ -60,7 +67,7 @@ const AppSelectInput: React.FC<
         style={{
           display: isManualInputEnabled ? "inline-block" : "none",
         }}
-        defaultValue=""
+        defaultValue={todoTitle || ""}
         onChange={(e) => {
           onUserManualInput(e.target.value);
           setFilterValue(e.target.value);
